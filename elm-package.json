@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Winnipeg Dot Net User Group website",
-    "repository": "https://github.com/winnipegdotnet/websitev2.git",
+    "repository": "https://github.com/wpgdotnetug/websitev2elm.git",
     "license": "BSD3",
     "source-directories": [
         "src/elm"

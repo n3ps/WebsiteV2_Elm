@@ -48,17 +48,32 @@ html, body {
   }
 }
 
-.banner-menu {
+.logo-menu {
   min-height: 106px;
-  padding: 20px;
+  padding: 20px 0;
   display: flex;
   flex-direction: row;
-  // justify-content: flex-end;
 
   img { width: 200px; height: 53px;}
   .motto {
     margin-left: 10px;
     header { color: #121212; font-size:18px; }
     .description { color: #c7cbcc; font-size:13px; }
+  }
+
+  .main-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    flex-grow: 1;
+    a {
+      font-size: 18px;
+      color: #11414f;
+      margin-right: 20px;
+
+      &:last-child {
+        margin-right: 0px;
+      }
+    }
   }
 }
