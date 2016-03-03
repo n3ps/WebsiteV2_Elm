@@ -6,8 +6,8 @@ import Signal exposing (Signal, Address)
 import Effects exposing (Effects, Never)
 import Html exposing (Html)
 
-import Models exposing (..)
 import Views exposing (..)
+import Models exposing (..)
 import Actions exposing (..)
 
 --

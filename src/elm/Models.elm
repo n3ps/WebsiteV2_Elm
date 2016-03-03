@@ -1,4 +1,4 @@
-module Models(..) where
+module Models where
 
 import Date exposing (Date)
 
