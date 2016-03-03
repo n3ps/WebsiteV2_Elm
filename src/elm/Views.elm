@@ -20,15 +20,20 @@ view address model =
     ]
 
 bannerMenu =
-  div [class "banner-menu"] [text "Winnipeg Dot Net User Group ponnies and rainbows"]
+  div [class "banner-menu"]
+    [ img [src "/assets/images/logo.png"] []
+    , section [class "motto"]
+        [ header [] [text "Winnipeg Dot Net User Group"]
+        , div [class "description"] [text "A user group full of lambdas, folds, MVC, ponnies and rainbows!"]
+        ]
+    ]
 
 socialMedia = div [class "social-media"] [slackForm, socialIcons]
 
 iconFor icn = i [class <| "fa fa-" ++ icn] []
 
 slackForm =
-  div
-    [class "slack-form"]
+  div [class "slack-form"]
     [ Html.form
         [class "form-inline"]
         [ div
@@ -39,10 +44,7 @@ slackForm =
                 [ input [class "form-control", type' "text", placeholder "you@domain.com"] []
                 , div [class "input-group-addon"]
                    [iconFor "chevron-right"]
-                ]
-            ]
-        ]
-    ]
+    ] ] ] ]
 
 socialIcons =
   let 

@@ -1,6 +1,7 @@
 html, body {
   margin: 0;
   background: white;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .social-media {
@@ -43,14 +44,21 @@ html, body {
     &:nth-child(1) i.fa-circle { color: #00b0fa; }
     &:nth-child(2) i.fa-circle { color: #1f5e94; }
     &:nth-child(3) i.fa-circle { color: #d74e3e; }
-
-
-    &:last-child {
-      margin-right: 0px;
-    }
+    &:last-child { margin-right: 0px; }
   }
 }
 
 .banner-menu {
   min-height: 106px;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  // justify-content: flex-end;
+
+  img { width: 200px; height: 53px;}
+  .motto {
+    margin-left: 10px;
+    header { color: #121212; font-size:18px; }
+    .description { color: #c7cbcc; font-size:13px; }
+  }
 }
