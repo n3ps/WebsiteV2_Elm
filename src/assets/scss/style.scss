@@ -1,3 +1,40 @@
 html, body {
   margin: 0;
+  background: white;
+}
+
+.social-media {
+  min-height: 66px;
+  border-bottom: 1px solid gray;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  padding: 10px;
+
+  .sm-link {
+    margin-right: 20px;
+    color: #c7cbcc;
+    font-size: 10px;
+    text-transform: uppercase;
+    span.fa-stack {
+      margin-right: 10px;
+      color: white;
+      //.fa-circle { color: black; }
+
+      .fa-github { color: black; font-size: 2em; }
+    }
+
+    &:nth-child(1) i.fa-circle { color: #00b0fa; }
+    &:nth-child(2) i.fa-circle { color: #1f5e94; }
+    &:nth-child(3) i.fa-circle { color: #d74e3e; }
+
+
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
+.banner-menu {
+  min-height: 106px;
 }
