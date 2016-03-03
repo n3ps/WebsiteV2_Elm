@@ -1,4 +1,4 @@
-module WpgDotNet where
+module Main where
 
 import StartApp
 import Task exposing (Task)

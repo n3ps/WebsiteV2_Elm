@@ -1,1 +1,0 @@
-elm make --output target/app.js src/WpgDotNet.elm
