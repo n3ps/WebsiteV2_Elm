@@ -36,7 +36,7 @@ pastEvents events =
     section [class "past-events"]
       [ header  [class "event-header"] [text "Past Events"] 
       , article [] (events |> List.take 3 |> List.map mkWidget)
-      , footer [] [a [href ""] [text "View All"]]
+      , footer [] [a [href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450", target "_blank"] [text "View All"]]
       ]
 
 nextEvent =
