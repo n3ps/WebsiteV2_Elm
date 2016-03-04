@@ -96,10 +96,16 @@ $greenish: #50e3c2;
     min-height: 740px;
     display: flex;
     flex-direction: row;
-    .event-img { flex-grow: 1; }
+    .event-img { 
+      flex-basis: 0;
+      flex-grow: 1; 
+      text-align: center;
+      padding-top: 54px;
+    }
     .event-info { 
       padding: 54px 101px;
       flex-grow: 1;
+      flex-basis: 0;
       color: $text-gray;
 
       .title {
