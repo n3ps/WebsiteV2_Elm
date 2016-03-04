@@ -10,6 +10,18 @@ $text-gray: #444444;
 $greenish: #50e3c2;
 $header-blue: #263c61;
 
+.flat-btn {
+  &:hover { text-decoration: none; }
+  background: $greenish;
+  font-size: 19px;
+  color: white ;
+  border-radius: 25px;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  letter-spacing: 10px;
+  border: none;
+}
+
 .social-media {
   min-height: 66px;
   border-bottom: 1px solid $light-gray;
@@ -94,6 +106,10 @@ $header-blue: #263c61;
 }
 
 .past-events {
+  footer { 
+    text-align: center;
+    a { @extend .flat-btn; }
+  }
   article {
     padding: 30px 0;
     display: flex;
@@ -194,20 +210,10 @@ $header-blue: #263c61;
           font-weight: bold;
         }
       }
-      .count-me {
+      footer {
         padding: 25px 0 37px;
         text-align: center;
-        a {
-          &:hover { text-decoration: none; }
-          background: $greenish;
-          font-size: 19px;
-          color:white ;
-          border-radius: 25px;
-          text-transform: uppercase;
-          padding: 10px 20px;
-          letter-spacing: 10px;
-          border: none;
-        }
+        a { @extend .flat-btn; }
       }
     }
   }

@@ -36,6 +36,7 @@ pastEvents events =
     section [class "past-events"]
       [ header  [class "event-header"] [text "Past Events"] 
       , article [] (events |> List.take 3 |> List.map mkWidget)
+      , footer [] [a [href ""] [text "View All"]]
       ]
 
 nextEvent =
@@ -59,7 +60,7 @@ nextEvent =
                     , span [class "name"] [text e.venue.name]
                     , span [class "address"] [text e.venue.address]
                     ]
-                , div [class "count-me"] [a [href e.link] [text "Count me in!"]]
+                , footer [] [a [href e.link] [text "Count me in!"]]
                 ]
             ]
         ]
