@@ -8,11 +8,18 @@ type alias Model =
   , sponsors : List Sponsor
   }
 
+type alias Venue =
+  { name : String
+  , address : String
+  }
+
 type alias Event = 
   { title : String
   , date : Date
   , presenter : String
-  , location : String
+  , description : String
+  , logo : String
+  , venue : Venue
   }
 
 type alias Sponsor = 

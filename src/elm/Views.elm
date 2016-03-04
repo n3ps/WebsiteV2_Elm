@@ -3,6 +3,8 @@ module Views (..) where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Signal exposing (Signal, Address)
+import Date
+import Date.Format exposing (format)
 
 import Actions exposing (..)
 import Models exposing (..)
@@ -11,13 +13,46 @@ view : Address Action -> Model -> Html
 view address model = 
   div [class "container"]
     [ header [] [socialMedia, logoMenu]
-    , section [class "next-event"] [text "Next event goes here"] 
+    , nextEvent model.next
     , section [class "past-events"] [text "View all past events"]
     , div [class "subscribe-list"] [text "subscribe & twitter stream"]
     , section [class "sponsors"] [text "sponsors go heere"]
     , section [class "contact-us"] [text "Amir, David & Roy"]
     , footer [] [text "here goes the footer"]
     ]
+
+nextEvent =
+  let 
+    showEvent e =
+      section [class "next-event"]
+        [
+          header  [] [text "Next Event"]
+        , article []
+            [ div [class "event-img"] [img [src e.logo] []]
+            , div [class "event-info"]
+                [ div [class "title"] [text e.title]
+                , label [] [text "Description"]
+                , div [class "description"] [text e.description ]
+                , div [class "date"       ]
+                    [ iconFor "calendar"
+                    , text <| format "%A, %B %e, %Y" e.date
+                    ]
+                , div [class "venue"]
+                    [ iconFor "map-marker"
+                    , text e.venue.name
+                    , text e.venue.address]
+                ]
+            ]
+        ]
+
+    workingOnIt =
+      section [class "next-event"]
+        [
+          header  [] [text "We are working on it"]
+        , article [] [text "Like crazy"]
+        ]
+
+  in Maybe.map showEvent >> Maybe.withDefault workingOnIt
 
 logoMenu =
   div [class "logo-menu"]
