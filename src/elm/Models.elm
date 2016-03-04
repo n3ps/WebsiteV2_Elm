@@ -20,6 +20,7 @@ type alias Event =
   , description : String
   , logo : String
   , venue : Venue
+  , link : String
   }
 
 type alias Sponsor = 

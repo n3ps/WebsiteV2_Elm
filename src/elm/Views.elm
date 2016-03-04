@@ -34,13 +34,15 @@ nextEvent =
                 , label [] [text "Description"]
                 , div [class "description"] [text e.description ]
                 , div [class "date"       ]
-                    [ iconFor "calendar"
+                    [ div [class "icon"] [iconFor "calendar"]
                     , text <| format "%A, %B %e, %Y" e.date
                     ]
                 , div [class "venue"]
-                    [ iconFor "map-marker"
-                    , text e.venue.name
-                    , text e.venue.address]
+                    [ div [class "icon"] [iconFor "map-marker"]
+                    , span [class "name"] [text e.venue.name]
+                    , span [class "address"] [text e.venue.address]
+                    ]
+                , div [class "count-me"] [a [href e.link] [text "Count me in!"]]
                 ]
             ]
         ]
