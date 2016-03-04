@@ -14,19 +14,36 @@ view address model =
   div [class "container"]
     [ header [] [socialMedia, logoMenu]
     , nextEvent model.next
-    , section [class "past-events"] [text "View all past events"]
+    , pastEvents model.pastEvents
     , div [class "subscribe-list"] [text "subscribe & twitter stream"]
     , section [class "sponsors"] [text "sponsors go heere"]
     , section [class "contact-us"] [text "Amir, David & Roy"]
     , footer [] [text "here goes the footer"]
     ]
 
+pastEvents events =
+  let
+    mkWidget e = 
+      div [class "past-event"]
+        [ div [class "image"] [img [src e.logo] []]
+        , div [class "info"]
+            [ div [class "title"] [text e.title]
+            , div [class "date"] [text <| format "%b %e, %Y" e.date]
+            , div [class "view"] [a [href e.link, target "_blank"] [text "View"]]
+            ]
+        ]
+  in
+    section [class "past-events"]
+      [ header  [class "event-header"] [text "Past Events"] 
+      , article [] (events |> List.take 3 |> List.map mkWidget)
+      ]
+
 nextEvent =
   let 
     showEvent e =
       section [class "next-event"]
         [
-          header  [] [text "Next Event"]
+          header  [class "event-header"] [text "Next Event"]
         , article []
             [ div [class "event-img"] [img [src e.logo] []]
             , div [class "event-info"]

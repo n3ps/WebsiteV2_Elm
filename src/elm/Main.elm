@@ -32,6 +32,7 @@ port tasks =
 init : (Model, Effects Action)
 init =
   let
+    empty = {title="", description="", venue=library, presenter=event.presenter, link=event.link, logo=event.logo, date=Date.fromTime 0 }
     description = """
 Microservices has taken over in the current buzzword barrage.
 With a little suave, you can easily charm this latest trend.
@@ -46,11 +47,20 @@ We'll go over getting started with Suave.io on building a simple web api and dep
       , description = description
       , venue = library
       , presenter = "Shane Charles"
-      , link = ""
+      , link = "https://www.eventbrite.ca/e/faster-apis-with-suaveio-featuring-shane-charles-tickets-20930172710"
       , logo = "https://img.evbuc.com/https%3A%2F%2Fimg.evbuc.com%2Fhttp%253A%252F%252Fcdn.evbuc.com%252Fimages%252F18085935%252F24010033924%252F1%252Foriginal.jpg%3Frect%3D0%252C20%252C692%252C346%26s%3D5f3ce8546d7761b2d5f8fc097a25dd47?h=200&w=450&s=128fa909fa50d212541a8b832b081ec3"
       , date = nextMonth
     }
-    model = { next = Just event, pastEvents = [], sponsors = [] }
+    model = { 
+      next = Just event, 
+      pastEvents = [
+          {empty | title="Stealing Time with the .Net ThreadPool"}
+        , {empty | title="VS Code-- The Visual Studio For Everyone"}
+        , {empty | title="Not just for games: Creating slick UIs with Unity, C# and XAML"}
+        , {empty | title="What to Expect with MVC 6"}
+      ], 
+      sponsors = [] 
+    }
   in
     (model, Effects.none)
 
