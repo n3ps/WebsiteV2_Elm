@@ -16,6 +16,9 @@ var elm  = require('gulp-elm');
 
 var fs = require('fs');
 
+var git = require('gulp-git');
+var rmrf = require('rimraf');
+
 // merge is used to merge the output from two different streams into the same stream
 var merge = require("merge-stream");
 // Need a command for reloading webpages using BrowserSync
@@ -87,6 +90,12 @@ gulp.task("fonts", function () {
     .pipe($.size({ title: "fonts" }));
 });
 
+gulp.task("images:dev", function () {
+  return gulp.src("src/assets/images/**")
+    .pipe(gulp.dest("serve/assets/images"))
+    .pipe($.size({ title: "images" }));
+});
+
 // Copy index.html and CNAME files to the "serve" directory
 gulp.task("copy:dev", function () {
   return gulp.src(["src/index.html", "src/CNAME"])
@@ -109,7 +118,7 @@ gulp.task("minify", ["styles"], function () {
     // Concatenate JavaScript files and preserve important comments
     .pipe($.if("*.js", $.uglify({preserveComments: "some"})))
     // Minify CSS
-    .pipe($.if("*.css", $.minifyCss()))
+    .pipe($.if("*.css", $.cleanCss()))
     // Start cache busting the files
     .pipe($.revAll({ ignore: ["index.html", ".eot", ".svg", ".ttf", ".woff"] }))
     .pipe(assets.restore())
@@ -134,8 +143,9 @@ gulp.task("minify", ["styles"], function () {
 // Task to upload your site to your GH Pages repo
 gulp.task("deploy", [], function () {
   // Deploys your optimized site, you can change the settings in the html task if you want to
-  return gulp.src("dist/**/*")
-    .pipe($.ghPages({branch: "gh-pages"}));
+  // return gulp.src("dist/**/*")
+  return gulp.src("serve/**/*")
+    .pipe($.ghPages({remoteUrl: "https://github.com/WpgDotNetUG/WpgDotNetUG.github.io.git", branch: "master"}));
 });
 
 gulp.task('elm-init', elm.init);
@@ -175,6 +185,7 @@ gulp.task("watch", function () {
   // We need to copy dev, so index.html may be replaced by error messages.
   gulp.watch(["src/elm/**/*.elm"], ["elm", "copy:dev", reload]);
   gulp.watch(["src/assets/scss/**/*.scss"], ["styles", "copy:dev", reload]);
+  gulp.watch(["src/assets/images/**"], ["images:dev", "copy:dev", reload]);
   // Watch JS folder
   gulp.watch(["src/index.html", "src/js/**/*.js"], ["copy:dev", reload]);
 });
@@ -201,4 +212,12 @@ gulp.task("build", gulpSequence("clean:dev", ["styles", "copy:dev", "elm"]));
 // it and outputs it to "./dist"
 gulp.task("publish", ["build", "clean:prod"], function () {
   gulp.start("minify", "cname", "images", "fonts");
+});
+
+gulp.task('serveprod', function() {
+  connect.server({
+      root: "dist",
+      port: process.env.PORT || 5000, // localhost:5000
+      livereload: false
+    });
 });
