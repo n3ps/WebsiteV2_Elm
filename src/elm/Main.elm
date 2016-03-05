@@ -25,6 +25,7 @@ port tasks : Signal (Task Never ())
 port tasks =
   app.tasks
 
+dateWD = Date.fromString >> Result.withDefault (Date.fromTime 0)
 
 --
 -- My functions
@@ -32,7 +33,7 @@ port tasks =
 init : (Model, Effects Action)
 init =
   let
-    empty = {title="", description="", venue=library, presenter=event.presenter, link=event.link, logo=event.logo, date=Date.fromTime 0 }
+    empty = {title="", description="", venue=library, presenter=event.presenter, link=event.link, logo=event.logo, date=dateWD "2016/1/1"}
     description = """
 Microservices has taken over in the current buzzword barrage.
 With a little suave, you can easily charm this latest trend.
@@ -41,7 +42,6 @@ Being written in F# you gain access to type providers, default immutability, and
 We'll go over getting started with Suave.io on building a simple web api and deploy it to Azure.
 """
     library = { address = "211 Donald St.", name = "Millenium library" }
-    nextMonth = Date.fromString "2011/1/1" |> Result.withDefault (Date.fromTime 0)
     event = {
       title = "Cool APIs with Suave.io"
       , description = description
@@ -49,15 +49,15 @@ We'll go over getting started with Suave.io on building a simple web api and dep
       , presenter = "Shane Charles"
       , link = "https://www.eventbrite.ca/e/faster-apis-with-suaveio-featuring-shane-charles-tickets-20930172710"
       , logo = "https://img.evbuc.com/https%3A%2F%2Fimg.evbuc.com%2Fhttp%253A%252F%252Fcdn.evbuc.com%252Fimages%252F18085935%252F24010033924%252F1%252Foriginal.jpg%3Frect%3D0%252C20%252C692%252C346%26s%3D5f3ce8546d7761b2d5f8fc097a25dd47?h=200&w=450&s=128fa909fa50d212541a8b832b081ec3"
-      , date = nextMonth
+      , date = dateWD "2016/5/1"
     }
     model = { 
       next = Just event, 
       pastEvents = [
-          {empty | title="Stealing Time with the .Net ThreadPool"}
-        , {empty | title="VS Code-- The Visual Studio For Everyone"}
-        , {empty | title="Not just for games: Creating slick UIs with Unity, C# and XAML"}
-        , {empty | title="What to Expect with MVC 6"}
+          {empty | title="Stealing Time with the .Net ThreadPool", date=dateWD "2016/4/1", link="http://www.eventbrite.ca/e/stealing-time-with-the-net-threadpool-with-adam-krieger-tickets-18061938745"}
+        , {empty | title="VS Code-- The Visual Studio For Everyone", date=dateWD "2016/3/1"}
+        , {empty | title="Not just for games: Creating slick UIs with Unity, C# and XAML", date=dateWD "2016/2/1"}
+        , {empty | title="What to Expect with MVC 6", date=dateWD "2016/1/1"}
       ], 
       sponsors = [] 
     }

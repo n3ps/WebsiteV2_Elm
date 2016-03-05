@@ -9,6 +9,13 @@ $title-gray: #121212;
 $text-gray: #444444;
 $greenish: #50e3c2;
 $header-blue: #263c61;
+$event-blue-background: #0e1e38;
+
+@media (min-width: 1600px) {
+  .container {
+    width: 1450px;
+  }
+}
 
 .flat-btn {
   &:visited, &:hover { text-decoration: none; }
@@ -20,6 +27,13 @@ $header-blue: #263c61;
   padding: 10px 20px;
   letter-spacing: 10px;
   border: none;
+}
+
+.border-btn {
+  @extend .flat-btn;
+  background: transparent;
+  border: 1px solid $greenish;
+  color: $greenish;
 }
 
 .social-media {
@@ -109,9 +123,54 @@ $header-blue: #263c61;
   letter-spacing: 10px;
 }
 
+.featured-videos {
+  border: 10px solid #eee;
+  display: flex;
+  flex-direction: row;
+  min-height: 300px;
+}
+
+.list-n-twitter {
+  background: #eee;
+  padding: 20px;
+  display: flex;
+  flex-direction: row;
+  min-height: 470px;
+
+  .subscribe, .twitter-stream {
+    flex-basis: 0;
+    flex-grow: 1;
+  }
+
+  .subscribe {
+    background: $event-blue-background;
+    color: white;
+    margin-right: 20px;
+    text-align: center;
+    padding: 90px 120px;
+    display: flex;
+    flex-direction: column;
+
+    header, .signup, .schedule, footer {
+      flex-grow: 1;
+      flex-basis: 0;
+      margin-bottom: 32px;
+    }
+    header { font-size: 28px; }
+    .signup { font-size: 16px; color: #9ca8b4; }
+    .schedule { color: #2c8188; }
+    footer { 
+      margin-bottom: 0px; 
+      a { @extend .border-btn; }
+    }
+  }
+}
+
+
 .past-events {
   footer { 
     text-align: center;
+    padding: 25px;
     a { @extend .flat-btn; }
   }
   article {
@@ -133,7 +192,7 @@ $header-blue: #263c61;
       }
       .info {
         padding: 20px;
-        background: #0e1e38;
+        background: $event-blue-background;
         color: white;
         height: 189px;
         display: flex;
