@@ -15,12 +15,29 @@ view address model =
     [ header [] [socialMedia, logoMenu]
     , nextEvent model.next
     , pastEvents model.pastEvents
-    , div [class "subscribe-list"] [text "subscribe & twitter stream"]
+    , featuredVideos
+    , listRegistration
     , section [class "sponsors"] [text "sponsors go heere"]
     , section [class "contact-us"] [text "Amir, David & Roy"]
     , footer [] [text "here goes the footer"]
     ]
 
+aBlank xs = a <| target "_blank"::xs
+
+featuredVideos =
+  div [class "featured-videos"] [text "Features videos from youtube"]
+
+listRegistration =
+  div [class "list-n-twitter"]
+    [ article [class "subscribe"]
+        [ header [] [text "Want to make sure you don't miss a meeting?"]
+        , div [class "signup"] [text "Then take a minute and sign up for the Winnipeg .NET user group mailing list!"]
+        , div [class "schedule"] [text "You can be on top of our event schedule, and all you need to do is check you email. Sign up now and don't miss another meeting." ]
+        , footer [] [aBlank [href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
+        ]
+    , article [class "twitter-stream"]
+        [text "twitter stream"]
+    ]
 
 pastEvents events =
   let
@@ -30,14 +47,14 @@ pastEvents events =
         , div [class "info"]
             [ div [class "title"] [text e.title]
             , div [class "date"] [text <| format "%b %e, %Y" e.date]
-            , div [class "view"] [a [href e.link, target "_blank"] [text "View"]]
+            , div [class "view"] [aBlank [href e.link] [text "View"]]
             ]
         ]
   in
     section [class "past-events"]
       [ header  [class "event-header"] [text "Past Events"] 
-      , article [] (events |> List.take 3 |> List.map mkWidget)
-      , footer [] [a [href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450", target "_blank"] [text "View All"]]
+      , article [] (events |> List.take 4 |> List.map mkWidget)
+      , footer [] [aBlank [href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"] [text "View All"]]
       ]
 
 nextEvent =
@@ -61,7 +78,7 @@ nextEvent =
                     , span [class "name"] [text e.venue.name]
                     , span [class "address"] [text e.venue.address]
                     ]
-                , footer [] [a [href e.link] [text "Count me in!"]]
+                , footer [] [aBlank [href e.link] [text "Count me in!"]]
                 ]
             ]
         ]
@@ -83,7 +100,7 @@ logoMenu =
         , div [class "description"] [text "A user group full of lambdas, folds, MVC, ponnies and rainbows!"]
         ]
     , div [class "main-menu"]
-        [ a [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450", target "_blank"] [text "Events"]
+        [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
         , a [title "Watch past presentations", href "#watch-us"] [text "Videos"]
         , a [title "Contact us", href "#contact-us"] [text "Contact"]
         ]
