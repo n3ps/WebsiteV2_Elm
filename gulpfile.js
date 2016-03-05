@@ -16,6 +16,9 @@ var elm  = require('gulp-elm');
 
 var fs = require('fs');
 
+var git = require('gulp-git');
+var rmrf = require('rimraf');
+
 // merge is used to merge the output from two different streams into the same stream
 var merge = require("merge-stream");
 // Need a command for reloading webpages using BrowserSync
@@ -140,8 +143,9 @@ gulp.task("minify", ["styles"], function () {
 // Task to upload your site to your GH Pages repo
 gulp.task("deploy", [], function () {
   // Deploys your optimized site, you can change the settings in the html task if you want to
-  return gulp.src("dist/**/*")
-    .pipe($.ghPages({branch: "gh-pages"}));
+  // return gulp.src("dist/**/*")
+  return gulp.src("serve/**/*")
+    .pipe($.ghPages({remoteUrl: "https://github.com/WpgDotNetUG/WpgDotNetUG.github.io.git", branch: "master"}));
 });
 
 gulp.task('elm-init', elm.init);
@@ -212,7 +216,7 @@ gulp.task("publish", ["build", "clean:prod"], function () {
 
 gulp.task('serveprod', function() {
   connect.server({
-      root: "dist"
+      root: "dist",
       port: process.env.PORT || 5000, // localhost:5000
       livereload: false
     });
