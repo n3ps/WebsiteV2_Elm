@@ -21,6 +21,7 @@ view address model =
     , footer [] [text "here goes the footer"]
     ]
 
+
 pastEvents events =
   let
     mkWidget e = 

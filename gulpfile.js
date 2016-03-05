@@ -87,6 +87,12 @@ gulp.task("fonts", function () {
     .pipe($.size({ title: "fonts" }));
 });
 
+gulp.task("images:dev", function () {
+  return gulp.src("src/assets/images/**")
+    .pipe(gulp.dest("serve/assets/images"))
+    .pipe($.size({ title: "images" }));
+});
+
 // Copy index.html and CNAME files to the "serve" directory
 gulp.task("copy:dev", function () {
   return gulp.src(["src/index.html", "src/CNAME"])
@@ -109,7 +115,7 @@ gulp.task("minify", ["styles"], function () {
     // Concatenate JavaScript files and preserve important comments
     .pipe($.if("*.js", $.uglify({preserveComments: "some"})))
     // Minify CSS
-    .pipe($.if("*.css", $.minifyCss()))
+    .pipe($.if("*.css", $.cleanCss()))
     // Start cache busting the files
     .pipe($.revAll({ ignore: ["index.html", ".eot", ".svg", ".ttf", ".woff"] }))
     .pipe(assets.restore())
@@ -175,6 +181,7 @@ gulp.task("watch", function () {
   // We need to copy dev, so index.html may be replaced by error messages.
   gulp.watch(["src/elm/**/*.elm"], ["elm", "copy:dev", reload]);
   gulp.watch(["src/assets/scss/**/*.scss"], ["styles", "copy:dev", reload]);
+  gulp.watch(["src/assets/images/**"], ["images:dev", "copy:dev", reload]);
   // Watch JS folder
   gulp.watch(["src/index.html", "src/js/**/*.js"], ["copy:dev", reload]);
 });
@@ -201,4 +208,12 @@ gulp.task("build", gulpSequence("clean:dev", ["styles", "copy:dev", "elm"]));
 // it and outputs it to "./dist"
 gulp.task("publish", ["build", "clean:prod"], function () {
   gulp.start("minify", "cname", "images", "fonts");
+});
+
+gulp.task('serveprod', function() {
+  connect.server({
+      root: "dist"
+      port: process.env.PORT || 5000, // localhost:5000
+      livereload: false
+    });
 });

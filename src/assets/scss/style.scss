@@ -71,7 +71,11 @@ $header-blue: #263c61;
   flex-direction: row;
   border-bottom: 2px solid #c2cad7;
 
-  img { width: 200px; height: 53px;}
+  img { 
+    // width: 200px;
+    height: 100px;
+  }
+
   .motto {
     margin-left: 10px;
     header { color: $title-gray; font-size:18px; }
