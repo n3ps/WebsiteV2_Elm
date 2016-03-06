@@ -6,6 +6,7 @@ import Signal exposing (Signal, Address)
 import Effects exposing (Effects, Never)
 import Html exposing (Html)
 import Date
+import Http
 
 import Views exposing (..)
 import Models exposing (..)
@@ -14,16 +15,13 @@ import Actions exposing (..)
 --
 -- StartApp boilerplate
 --
-app =
-  StartApp.start { init = init, view = view, update = update, inputs = [] }
+app = StartApp.start { init = init, view = view, update = update, inputs = [] }
 
 main : Signal Html
-main =
-  app.html
+main = app.html
 
 port tasks : Signal (Task Never ())
-port tasks =
-  app.tasks
+port tasks = app.tasks
 
 dateWD = Date.fromString >> Result.withDefault (Date.fromTime 0)
 
@@ -62,10 +60,25 @@ We'll go over getting started with Suave.io on building a simple web api and dep
       sponsors = [] 
     }
   in
-    (model, Effects.none)
+    (model, getSponsors)
 
 update : Action -> Model -> (Model, Effects Action)
 update action model = 
   case action of
+    LoadSponsors (Just loaded) -> ({model | sponsors=loaded}, Effects.none)
+    LoadSponsors Nothing       -> (model, Effects.none)
     NoOp -> (model, Effects.none)
 
+-- Api queries
+
+-- apiUrl = "http://wpgdotnetapi.azurewebsites.net/api/"
+apiUrl = "http://localhost:8083/api/"
+
+getSponsors : Effects Action
+getSponsors =
+  apiUrl ++ "sponsors"
+  |> Debug.log "--- The api "
+  |> Http.get sponsorList
+  |> Task.toMaybe
+  |> Task.map LoadSponsors
+  |> Effects.task

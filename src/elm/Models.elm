@@ -1,6 +1,7 @@
 module Models where
 
 import Date exposing (Date)
+import Json.Decode as Json exposing ((:=))
 
 type alias Model = 
   { next : Maybe Event
@@ -29,4 +30,12 @@ type alias Sponsor =
   , image : String
   }
 
-
+sponsorList : Json.Decoder (List Sponsor)
+sponsorList =
+  Json.at ["sponsors"]
+  <| Json.list 
+  <| Json.object3 
+      Sponsor
+      ("name"   := Json.string)
+      ("url"    := Json.string)
+      ("imgUrl" := Json.string)
