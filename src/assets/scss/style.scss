@@ -130,6 +130,64 @@ $event-blue-background: #0e1e38;
   min-height: 300px;
 }
 
+.contact-us {
+  header { @extend .event-header; }
+  article {
+    .message {
+      color: #080808;
+      margin-bottom: 40px;
+      font-size: 20px;
+    }
+
+    .members {
+      display: flex;
+      flex-direction: row;
+      // justify-content: center;
+      justify-content: center;
+
+      .member {
+
+        img { border-radius: 50%; }
+
+        background: #0d1e38;
+        width: 270px;
+        padding: 30px 0;
+        color:white;
+        margin-right: 30px;
+
+        .name {
+          text-transform: uppercase;
+          font-weight: bold;
+          margin-top: 16px;
+        }
+
+        .role {
+          margin-bottom: 40px;
+        }
+
+        .contact {
+          a { 
+            color:white;
+            border-color: white;
+            @extend .border-btn; 
+            font-size: 10px;
+            letter-spacing: 2px;
+          }
+        }
+        &:nth-child(2) { background: #11414f; }
+        &:nth-child(3) { background: #00666a; }
+
+        &:last-child { margin-right: 0px; }
+      }
+
+      
+    }
+    text-align: center;
+    padding: 35px 0 90px;
+  }
+  background: #eee;
+}
+
 .sponsors {
   header { @extend .event-header; }
   article {
