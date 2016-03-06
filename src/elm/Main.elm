@@ -51,6 +51,7 @@ We'll go over getting started with Suave.io on building a simple web api and dep
     }
     model = { 
       next = Just event, 
+      board = [],
       pastEvents = [
           {empty | title="Stealing Time with the .Net ThreadPool", date=dateWD "2016/4/1", link="http://www.eventbrite.ca/e/stealing-time-with-the-net-threadpool-with-adam-krieger-tickets-18061938745"}
         , {empty | title="VS Code-- The Visual Studio For Everyone", date=dateWD "2016/3/1"}

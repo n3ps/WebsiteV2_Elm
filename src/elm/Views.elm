@@ -20,11 +20,14 @@ view address model =
     , featuredVideos
     , listRegistration
     , sponsorsView model.sponsors
-    , section [class "contact-us"] [text "Amir, David & Roy"]
+    , contactView model.board
     , footer [] [text "here goes the footer"]
     ]
 
 img_asset s = "/assets/images/" ++ s
+
+contactView board =
+  section [class "contact-us"] [text "Amir, David & Roy"]
 
 sponsorsView sponsors  =
   let
