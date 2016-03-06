@@ -26,8 +26,20 @@ view address model =
 
 img_asset s = "/assets/images/" ++ s
 
-contactView board =
-  section [class "contact-us"] [text "Amir, David & Roy"]
+contactView members =
+  let
+    mkContact member = div [class "member", title member.name] [img [src member.image] []] 
+    contactMap = case members of
+      [] -> [text "No contact information available at the moment"]
+      xs -> xs |> List.map mkContact
+
+  in section [class "contact-us"] 
+      [ header  [] [text "Contact Us"]
+      , article [] 
+          [ div [class "message"] [text "Looking to reach out directly to the Winnipeg .NET User Group board? Click on the board member to ask your query."]
+          , div [] contactMap
+          ]
+      ]
 
 sponsorsView sponsors  =
   let

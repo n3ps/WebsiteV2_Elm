@@ -130,6 +130,26 @@ $event-blue-background: #0e1e38;
   min-height: 300px;
 }
 
+.contact-us {
+  header { @extend .event-header; }
+  article {
+    .message {
+      color: #080808;
+      margin-bottom: 40px;
+      font-size: 20px;
+    }
+
+    .members {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+    text-align: center;
+    padding: 35px 0 90px;
+  }
+  background: #eee;
+}
+
 .sponsors {
   header { @extend .event-header; }
   article {
