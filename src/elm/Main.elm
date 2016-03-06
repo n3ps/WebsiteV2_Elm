@@ -61,7 +61,7 @@ We'll go over getting started with Suave.io on building a simple web api and dep
       sponsors = [] 
     }
   in
-    (model, getBoard)
+    (model, Effects.batch [getSponsors, getBoard])
 
 update : Action -> Model -> (Model, Effects Action)
 update action model = 
