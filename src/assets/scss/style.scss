@@ -130,6 +130,33 @@ $event-blue-background: #0e1e38;
   min-height: 300px;
 }
 
+footer.main-footer {
+  background: #3c3d41;
+  color: white;
+  text-align: center;
+  padding: 50px 0 30px;
+  font-size: 14px;
+
+  .menu {
+    border-bottom: 1px solid #45464a;
+    padding: 0 20px 20px;
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    a { 
+      color: white;
+      font-size: 14px; 
+      margin-right: 20px;
+
+      &:last-child { margin-right: 0px; }
+    }
+  }
+
+  .copyright, .version { color: #8c8d91; }
+}
+
 .contact-us {
   header { @extend .event-header; }
   article {
@@ -142,7 +169,6 @@ $event-blue-background: #0e1e38;
     .members {
       display: flex;
       flex-direction: row;
-      // justify-content: center;
       justify-content: center;
 
       .member {
