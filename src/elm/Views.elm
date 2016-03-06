@@ -9,6 +9,8 @@ import Date.Format exposing (format)
 import Actions exposing (..)
 import Models exposing (..)
 
+aBlank xs = a <| target "_blank"::xs
+
 view : Address Action -> Model -> Html
 view address model = 
   div [class "container"]
@@ -17,12 +19,24 @@ view address model =
     , pastEvents model.pastEvents
     , featuredVideos
     , listRegistration
-    , section [class "sponsors"] [text "sponsors go heere"]
+    , sponsorsView model.sponsors
     , section [class "contact-us"] [text "Amir, David & Roy"]
     , footer [] [text "here goes the footer"]
     ]
 
-aBlank xs = a <| target "_blank"::xs
+img_asset s = "/assets/images/" ++ s
+
+sponsorsView sponsors  =
+  let
+    sponsorImage sponsor = div [class "sponsor", title sponsor.name] [aBlank [href sponsor.url] [img [src sponsor.image] []] ]
+    sponsorMap = case sponsors of
+      [] -> [text "No sponsors information available at the moment"]
+      xs -> xs |> List.map sponsorImage
+
+  in section [class "sponsors"] 
+      [ header  [] [text "Sponsors"]
+      , article [] sponsorMap
+      ]
 
 featuredVideos =
   div [class "featured-videos"] [text "Features videos from youtube"]

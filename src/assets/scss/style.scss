@@ -130,6 +130,29 @@ $event-blue-background: #0e1e38;
   min-height: 300px;
 }
 
+.sponsors {
+  header { @extend .event-header; }
+  article {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 50px 0;
+    .sponsor {
+      flex-grow: 1;
+      flex-basis: 0;
+      text-align: center;
+      img {
+        height: 110px;
+        width: 160px;
+        filter: grayscale(100%);
+      }
+
+      a:hover img { filter: grayscale(0); }
+    }
+  }
+  min-height: 220px;
+}
+
 .list-n-twitter {
   background: #eee;
   padding: 20px;
