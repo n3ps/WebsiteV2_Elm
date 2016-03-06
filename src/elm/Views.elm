@@ -10,6 +10,7 @@ import Actions exposing (..)
 import Models exposing (..)
 
 aBlank xs = a <| target "_blank"::xs
+anchor s = a [name s] []
 
 view : Address Action -> Model -> Html
 view address model = 
@@ -21,7 +22,11 @@ view address model =
     , listRegistration
     , sponsorsView model.sponsors
     , contactView model.board
-    , footer [] [text "here goes the footer"]
+    , footer [class "main-footer"] 
+        [ div [class "menu"] menuOptions
+        , div [class "copyright"] [text "© Winnipeg Dot Net User Group 2015"]
+        , div [class "version"] [text "v0.1 aabbcc"]
+        ]
     ]
 
 img_asset s = "/assets/images/" ++ s
@@ -40,7 +45,8 @@ contactView members =
       xs -> xs |> List.map mkContact
 
   in section [class "contact-us"] 
-      [ header  [] [text "Contact Us"]
+      [ anchor "contact-us"
+      , header  [] [text "Contact Us"]
       , article [] 
           [ div [class "message"] [text "Looking to reach out directly to the Winnipeg .NET User Group board? Click on the board member to ask your query."]
           , div [class "members"] contactMap
@@ -60,7 +66,10 @@ sponsorsView sponsors  =
       ]
 
 featuredVideos =
-  div [class "featured-videos"] [text "Features videos from youtube"]
+  div [class "featured-videos"]
+    [ anchor "watch-us"
+    , text "Features videos from youtube"
+    ]
 
 listRegistration =
   div [class "list-n-twitter"]
@@ -127,6 +136,12 @@ nextEvent =
 
   in Maybe.map showEvent >> Maybe.withDefault workingOnIt
 
+menuOptions =
+  [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
+  , a [title "Watch past presentations", href "#watch-us"] [text "Videos"]
+  , a [title "Contact us", href "#contact-us"] [text "Contact"]
+  ]
+
 logoMenu =
   div [class "logo-menu"]
     [ img [src "/assets/images/logo.png"] []
@@ -134,11 +149,7 @@ logoMenu =
         [ header [] [text "Winnipeg Dot Net User Group"]
         , div [class "description"] [text "A user group full of lambdas, folds, MVC, ponnies and rainbows!"]
         ]
-    , div [class "main-menu"]
-        [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
-        , a [title "Watch past presentations", href "#watch-us"] [text "Videos"]
-        , a [title "Contact us", href "#contact-us"] [text "Contact"]
-        ]
+    , div [class "main-menu"] menuOptions
     ]
 
 socialMedia = div [class "social-media"] [slackForm, socialIcons]
