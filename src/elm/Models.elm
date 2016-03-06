@@ -42,8 +42,8 @@ boardDecoder =
       ("role"    := Json.string)
       ("contact" := Json.string)
 
-sponsorList : Json.Decoder (List Sponsor)
-sponsorList =
+sponsorDecoder : Json.Decoder (List Sponsor)
+sponsorDecoder =
   Json.at ["sponsors"]
   <| Json.list 
   <| Json.object3 

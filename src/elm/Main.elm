@@ -61,25 +61,31 @@ We'll go over getting started with Suave.io on building a simple web api and dep
       sponsors = [] 
     }
   in
-    (model, getSponsors)
+    (model, getBoard)
 
 update : Action -> Model -> (Model, Effects Action)
 update action model = 
   case action of
-    LoadSponsors (Just loaded) -> ({model | sponsors=loaded}, Effects.none)
-    LoadSponsors Nothing       -> (model, Effects.none)
-    NoOp -> (model, Effects.none)
+    LoadSponsors (Just loaded)  -> ({model | sponsors=loaded}, Effects.none)
+    LoadBoard    (Just members) -> ({model | board=members  }, Effects.none)
+    _ -> (model, Effects.none)
 
 -- Api queries
 
 -- apiUrl = "http://wpgdotnetapi.azurewebsites.net/api/"
 apiUrl = "http://localhost:8083/api/"
 
-getSponsors : Effects Action
+getBoard =
+  apiUrl ++ "board"
+  |> Http.get boardDecoder
+  |> Task.toMaybe
+  |> Task.map LoadBoard
+  |> Effects.task
+
 getSponsors =
   apiUrl ++ "sponsors"
-  |> Debug.log "--- The api "
-  |> Http.get sponsorList
+  |> Http.get sponsorDecoder
   |> Task.toMaybe
   |> Task.map LoadSponsors
   |> Effects.task
+

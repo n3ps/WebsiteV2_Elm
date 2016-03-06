@@ -28,7 +28,13 @@ img_asset s = "/assets/images/" ++ s
 
 contactView members =
   let
-    mkContact member = div [class "member", title member.name] [img [src member.image] []] 
+    mailTo = (++) "mailto:winnipegdotnet@gmail.com?subject=ATTN: "
+    mkContact mbr = div [class "member", title mbr.name]
+      [ img [src mbr.image] []
+      , div [class "name"] [text mbr.name]
+      , div [class "role"] [text mbr.role]
+      , div [class "contact"] [a [href <| mailTo mbr.contact] [text mbr.contact]]
+      ] 
     contactMap = case members of
       [] -> [text "No contact information available at the moment"]
       xs -> xs |> List.map mkContact
@@ -37,7 +43,7 @@ contactView members =
       [ header  [] [text "Contact Us"]
       , article [] 
           [ div [class "message"] [text "Looking to reach out directly to the Winnipeg .NET User Group board? Click on the board member to ask your query."]
-          , div [] contactMap
+          , div [class "members"] contactMap
           ]
       ]
 
