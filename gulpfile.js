@@ -15,9 +15,8 @@ var browserSync = require("browser-sync");
 var elm  = require('gulp-elm');
 
 var fs = require('fs');
-
+const shell = require('gulp-shell')
 var git = require('gulp-git');
-var rmrf = require('rimraf');
 
 // merge is used to merge the output from two different streams into the same stream
 var merge = require("merge-stream");
@@ -221,3 +220,22 @@ gulp.task('serveprod', function() {
       livereload: false
     });
 });
+
+gulp.task('test', ['elm-init'], () => {
+  return gulp.src('test/*.elm')
+    .pipe(elm())
+    .pipe(gulp.dest('tmp/'))
+    .pipe(shell(
+      [ 'echo start elm-test build'
+      , 'sh ./elm-stuff/packages/laszlopandy/elm-console/1.1.0/elm-io.sh tmp/Main.js tmp/test.js'
+      , 'node tmp/test.js' 
+      ]
+    ));
+})
+
+gulp.task('guard', function() {
+  gulp.start('test')
+  gulp.watch('src/**', ['build'])
+  gulp.watch('test/**', ['test'])
+})
+

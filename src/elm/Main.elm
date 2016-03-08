@@ -31,7 +31,7 @@ dateWD = Date.fromString >> Result.withDefault (Date.fromTime 0)
 init : (Model, Effects Action)
 init =
   let
-    empty = {title="", description="", venue=library, presenter=event.presenter, link=event.link, logo=event.logo, date=dateWD "2016/1/1"}
+    empty = {title="", description="", venue=library, link=event.link, logo=event.logo, date=dateWD "2016/1/1", status=Unknown}
     description = """
 Microservices has taken over in the current buzzword barrage.
 With a little suave, you can easily charm this latest trend.
@@ -42,38 +42,49 @@ We'll go over getting started with Suave.io on building a simple web api and dep
     library = { address = "211 Donald St.", name = "Millenium library" }
     event = {
       title = "Cool APIs with Suave.io"
-      , description = description
-      , venue = library
-      , presenter = "Shane Charles"
-      , link = "https://www.eventbrite.ca/e/faster-apis-with-suaveio-featuring-shane-charles-tickets-20930172710"
-      , logo = "https://img.evbuc.com/https%3A%2F%2Fimg.evbuc.com%2Fhttp%253A%252F%252Fcdn.evbuc.com%252Fimages%252F18085935%252F24010033924%252F1%252Foriginal.jpg%3Frect%3D0%252C20%252C692%252C346%26s%3D5f3ce8546d7761b2d5f8fc097a25dd47?h=200&w=450&s=128fa909fa50d212541a8b832b081ec3"
       , date = dateWD "2016/5/1"
+      , description = description
+      , logo = "https://img.evbuc.com/https%3A%2F%2Fimg.evbuc.com%2Fhttp%253A%252F%252Fcdn.evbuc.com%252Fimages%252F18085935%252F24010033924%252F1%252Foriginal.jpg%3Frect%3D0%252C20%252C692%252C346%26s%3D5f3ce8546d7761b2d5f8fc097a25dd47?h=200&w=450&s=128fa909fa50d212541a8b832b081ec3"
+      , venue = library
+      , link = "https://www.eventbrite.ca/e/faster-apis-with-suaveio-featuring-shane-charles-tickets-20930172710"
+      , status = Completed
     }
     model = { 
-      next = Just event, 
+      next = Nothing,
       board = [],
-      pastEvents = [
-          {empty | title="Stealing Time with the .Net ThreadPool", date=dateWD "2016/4/1", link="http://www.eventbrite.ca/e/stealing-time-with-the-net-threadpool-with-adam-krieger-tickets-18061938745"}
-        , {empty | title="VS Code-- The Visual Studio For Everyone", date=dateWD "2016/3/1"}
-        , {empty | title="Not just for games: Creating slick UIs with Unity, C# and XAML", date=dateWD "2016/2/1"}
-        , {empty | title="What to Expect with MVC 6", date=dateWD "2016/1/1"}
-      ], 
+      pastEvents = [],
       sponsors = [] 
     }
   in
-    (model, Effects.batch [getSponsors, getBoard])
+    (model, Effects.batch [getSponsors, getBoard, getEvents])
 
 update : Action -> Model -> (Model, Effects Action)
 update action model = 
   case action of
     LoadSponsors (Just loaded)  -> ({model | sponsors=loaded}, Effects.none)
     LoadBoard    (Just members) -> ({model | board=members  }, Effects.none)
+    LoadEvents   (Just events)  -> (assignEvents events model, Effects.none)
     _ -> (model, Effects.none)
+
+assignEvents events model =
+  let
+    completed = events |> List.filter (\e -> e.status == Completed)
+    maybeNext = events |> List.filter (\e -> e.status == Live) |> List.head
+  in {model | next=maybeNext, pastEvents=completed}
 
 -- Api queries
 
--- apiUrl = "http://wpgdotnetapi.azurewebsites.net/api/"
-apiUrl = "http://localhost:8083/api/"
+apiUrl = "http://api.winnipegdotnet.org/api/"
+-- apiUrl = "http://localhost:8083/api/"
+
+getResource resource decoder loader =
+  apiUrl ++ resource
+  |> Http.get decoder
+  |> Task.toMaybe
+  |> Task.map loader
+  |> Effects.task
+
+getEvents = getResource "events" eventDecoder LoadEvents
 
 getBoard =
   apiUrl ++ "board"
