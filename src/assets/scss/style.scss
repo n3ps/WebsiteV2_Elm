@@ -80,18 +80,18 @@ $event-blue-background: #0e1e38;
 
 .logo-menu {
   min-height: 106px;
-  padding: 10px 0 0;
+  padding: 30px 130px 0;
   display: flex;
   flex-direction: row;
   border-bottom: 2px solid #c2cad7;
 
   img { 
-    // width: 200px;
-    height: 100px;
+    height: 50px;
   }
 
   .motto {
-    margin-left: 10px;
+    margin-left: 20px;
+    width: 300px;
     header { color: $title-gray; font-size:18px; }
     .description { color: #c7cbcc; font-size:13px; }
   }
@@ -104,7 +104,7 @@ $event-blue-background: #0e1e38;
     a {
       font-size: 18px;
       color: #11414f;
-      margin-right: 20px;
+      margin-right: 55px;
 
       &:last-child {
         margin-right: 0px;
@@ -336,6 +336,7 @@ footer.main-footer {
       flex-grow: 1; 
       text-align: center;
       padding-top: 54px;
+      img {width: 100%;}
     }
     .event-info { 
       padding: 54px 101px 0;
