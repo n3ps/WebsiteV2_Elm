@@ -125,8 +125,53 @@ $event-blue-background: #0e1e38;
 
 .featured-videos {
   border: 10px solid #eee;
-  display: flex;
-  flex-direction: row;
+  > header {
+    height: 85px;
+    padding: 25px 120px 0 ;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    flex-direction:row;
+    justify-content: space-between;
+
+    .title {color: #373737; font-size:20px;}
+
+    a {
+      color: #8d8e90;
+      text-transform: uppercase; 
+      span {
+        display: inline-block;
+        line-height: 28px;
+        vertical-align: bottom;
+      }
+    }
+    i { color: #e54432; font-size: 2em; margin-right: 20px; }
+  }
+  article {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 25px 120px;
+
+    .video {
+      img { height: 189px; }
+      flex-basis: 20% ;
+
+      .title {
+        color: #000;
+        font-size: 20px;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .descr {
+        color: #a8a8a8;
+        font-size: 13px;
+        padding: 15px 0;
+        text-align: justify;
+        line-height: 1.8em;
+      }
+    }
+  }
   min-height: 300px;
 }
 
