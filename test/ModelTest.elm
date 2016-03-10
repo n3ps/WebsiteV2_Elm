@@ -12,7 +12,7 @@ import Models as M
 
 
 tests = suite "Models Tests"
-    [ dateDecodeTests, eventDecodeTests ]
+    [ dateDecodeTests, eventDecodeTests, videoDecodeTests ]
 
 
 dateDecodeTests =
@@ -61,3 +61,28 @@ eventDecodeTests =
     assertion = assertEqual expected actual
   in
     test "The event decoder returns an event" assertion
+
+videoDecodeTests = 
+  let
+    jsonStr = """
+      { "videos": [
+          { "title": "Stealing Time",
+            "date": "2016-02-24T22:39:21.0000000Z",
+            "thumbnail": "https://thumbnail",
+            "description": "Scalable applications",
+            "link": "https://watch5.com"
+          }
+      ]}
+      """
+    actual = jsonStr |> Json.decodeString M.videoDecoder
+    expected = Ok [{
+      title="Stealing Time",
+      date=Date.fromTime 0,
+      description="Scalable applications",
+      thumbnail="https://thumbnail",
+      link="https://watch5.com"
+    }]
+    assertion = assertEqual expected actual
+  in
+    test "The video decoder returns a video" assertion
+

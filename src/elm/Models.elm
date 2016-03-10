@@ -9,7 +9,24 @@ type alias Model =
   , pastEvents : List Event
   , sponsors : List Sponsor
   , board : List BoardMember
+  , videos : List Video
   }
+
+emptyModel = 
+  { 
+    next = Nothing,
+    board = [],
+    pastEvents = [],
+    sponsors = [],
+    videos = []
+  }
+
+type alias Video = 
+  {title:String,
+   link: String,
+   description: String,
+   date: Date,
+   thumbnail: String}
 
 type alias BoardMember = {name:String, image: String, role: String, contact: String}
 
@@ -61,7 +78,6 @@ eventDecoder  =
       ("link"        := Json.string)
       ("status"      := Json.map toStatus Json.string)
 
-boardDecoder : Json.Decoder (List BoardMember)
 boardDecoder =
   Json.at ["board"]
   <| Json.list 
@@ -72,7 +88,6 @@ boardDecoder =
       ("role"    := Json.string)
       ("contact" := Json.string)
 
-sponsorDecoder : Json.Decoder (List Sponsor)
 sponsorDecoder =
   Json.at ["sponsors"]
   <| Json.list 
@@ -81,3 +96,14 @@ sponsorDecoder =
       ("name"   := Json.string)
       ("url"    := Json.string)
       ("imgUrl" := Json.string)
+
+videoDecoder =
+  Json.at ["videos"]
+  <| Json.list
+  <| Json.object5
+      Video
+        ("title"       := Json.string)
+        ("link"        := Json.string)
+        ("description" := Json.string)
+        ("date"        := JsonX.date)
+        ("thumbnail"   := Json.string)

@@ -18,7 +18,7 @@ view address model =
     [ header [] [socialMedia, logoMenu]
     , nextEvent model.next
     , pastEvents model.pastEvents
-    , featuredVideos
+    , featuredVideos model.videos
     , listRegistration
     , sponsorsView model.sponsors
     , contactView model.board
@@ -65,10 +65,23 @@ sponsorsView sponsors  =
       , article [] sponsorMap
       ]
 
-featuredVideos =
-  div [class "featured-videos"]
+featuredVideos videos =
+  let
+    featured = videos |> List.take 3 
+
+    mkFeature v = div [class "video"]
+      [ header [] [aBlank [href v.link] [img [src v.thumbnail] []]]
+      -- , div [class "title"] [text v.title]
+      , div [class "descr"] [text v.description]
+      ]
+
+  in section [class "featured-videos"]
     [ anchor "watch-us"
-    , text "Features videos from youtube"
+    , header [] 
+        [span [class "title"] [text "Winnipeg .NET User Group"],
+         aBlank [href youTube]
+          [iconFor "youtube-play", span [] [text "Subscribe"]]]
+    , article [] (featured |> List.map mkFeature)
     ]
 
 listRegistration =
@@ -170,6 +183,8 @@ slackForm =
                    [iconFor "chevron-right"]
     ] ] ] ]
 
+youTube  = "https://www.youtube.com/channel/UC6OzdI6-htXE_97zamJRaaA"
+
 socialIcons =
   let 
     icon id =
@@ -182,7 +197,6 @@ socialIcons =
     linkTo link i t hint = a [title hint, class "sm-link", href link, target "_blank"] [icon i, text t]
     twitter  = "https://twitter.com/wpgnetug" 
     facebook = "https://www.facebook.com/winnipegdotnet"
-    youTube  = "https://www.youtube.com/channel/UC6OzdI6-htXE_97zamJRaaA"
     gitHub   = "https://github.com/WpgDotNetUG/UserGroupWebsite"
   in 
   div [class "social-icons"]
