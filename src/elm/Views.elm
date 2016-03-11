@@ -197,7 +197,7 @@ socialIcons =
     linkTo link i t hint = a [title hint, class "sm-link", href link, target "_blank"] [icon i, text t]
     twitter  = "https://twitter.com/wpgnetug" 
     facebook = "https://www.facebook.com/winnipegdotnet"
-    gitHub   = "https://github.com/WpgDotNetUG/UserGroupWebsite"
+    gitHub   = "https://github.com/WpgDotNetUG/WebsiteV2_Elm"
   in 
   div [class "social-icons"]
     [ linkTo twitter  "twitter"  "Follow" "Follow us on Twitter"
