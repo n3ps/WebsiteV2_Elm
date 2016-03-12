@@ -23,6 +23,9 @@ main = app.html
 port tasks : Signal (Task Never ())
 port tasks = app.tasks
 
+port randomSeed : (Int, Int)
+
+
 --
 -- My functions
 --

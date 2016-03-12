@@ -4,7 +4,10 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Signal exposing (Signal, Address)
 import Date
+import Array
 import Date.Format exposing (format)
+import Random
+import Random.Array as RA
 
 import Actions exposing (..)
 import Models exposing (..)
@@ -65,9 +68,13 @@ sponsorsView sponsors  =
       , article [] sponsorMap
       ]
 
+
+seed0 : Random.Seed
+seed0 = (uncurry Random.initialSeed) randomSeed
+
 featuredVideos videos =
   let
-    featured = videos |> List.take 3 
+    featured = videos |> Array.fromList |> RA.shuffle seed0 |> fst |> Array.toList |> List.take 3
 
     mkFeature v = div [class "video"]
       [ header [] [aBlank [href v.link] [img [src v.thumbnail] []]]
