@@ -21,7 +21,7 @@ view address model =
     [ header [] [socialMedia, logoMenu]
     , nextEvent model.next
     , pastEvents model.pastEvents
-    , featuredVideos model.videos
+    , featuredVideos model.videos model.seed
     , listRegistration
     , sponsorsView model.sponsors
     , contactView model.board
@@ -69,12 +69,9 @@ sponsorsView sponsors  =
       ]
 
 
-seed0 : Random.Seed
-seed0 = (uncurry Random.initialSeed) randomSeed
-
-featuredVideos videos =
+featuredVideos videos seed =
   let
-    featured = videos |> Array.fromList |> RA.shuffle seed0 |> fst |> Array.toList |> List.take 3
+    featured = videos |> Array.fromList |> RA.shuffle seed |> fst |> Array.toList |> List.take 3
 
     mkFeature v = div [class "video"]
       [ header [] [aBlank [href v.link] [img [src v.thumbnail] []]]

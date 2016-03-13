@@ -7,6 +7,7 @@ import Effects exposing (Effects, Never)
 import Html exposing (Html)
 import Date
 import Http
+import Random
 
 import Views exposing (..)
 import Models exposing (..)
@@ -23,8 +24,7 @@ main = app.html
 port tasks : Signal (Task Never ())
 port tasks = app.tasks
 
-port randomSeed : (Int, Int)
-
+port randomSeed : Int
 
 --
 -- My functions
@@ -38,7 +38,7 @@ update action model =
   case action of
     LoadSponsors (Just loaded)  -> ({model | sponsors= loaded }, Effects.none)
     LoadBoard    (Just members) -> ({model | board   = members}, Effects.none)
-    LoadVideos   (Just videos)  -> ({model | videos  = videos }, Effects.none)
+    LoadVideos   (Just videos)  -> ({model | videos  = videos, seed = randomSeed |> Random.initialSeed }, Effects.none)
     LoadEvents   (Just events)  -> (assignEvents events model, Effects.none)
     _ -> (model, Effects.none)
 
