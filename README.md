@@ -1,6 +1,6 @@
-# Requirements to install
+# Requirements
 
-* [Elm architecture](http://elm-lang.org/install)
+* [Install Elm architecture](http://elm-lang.org/install)
 
 # Running the site
 
