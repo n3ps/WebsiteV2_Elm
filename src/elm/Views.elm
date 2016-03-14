@@ -18,7 +18,7 @@ anchor s = a [name s] []
 view : Address Action -> Model -> Html
 view address model = 
   div [class "container"]
-    [ header [] [socialMedia, logoMenu]
+    [ header [] [menuToggle, navSocial, logoMenu]
     , nextEvent model.next
     , pastEvents model.pastEvents
     , featuredVideos model.videos model.seed
@@ -171,9 +171,18 @@ logoMenu =
     , div [class "main-menu"] menuOptions
     ]
 
-socialMedia = div [class "social-media"] [slackForm, socialIcons]
+navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons]
 
 iconFor icn = i [class <| "fa fa-" ++ icn] []
+  
+navMenu =
+  ul [class "nav-menu"]
+    [ li [] [a [] [text "Next Event"]]
+    , li [] [a [] [text "Past Events"]]
+    , li [] [a [] [text "Subscribe"]]
+    , li [] [a [] [text "Sponsors"]]
+    , li [] [a [] [text "Contact Us"]]
+    ]
 
 slackForm =
   div [class "slack-form"]
@@ -212,3 +221,5 @@ socialIcons =
     , linkTo gitHub   "github"   "Fork" "Fork us on GitHub and collaborate"
     ]
 
+menuToggle = 
+  input [type' "checkbox", class "drawer-toggle"] []
