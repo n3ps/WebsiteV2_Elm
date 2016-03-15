@@ -54,11 +54,16 @@ img { max-width: 100%; }
 
 // Header
 .logo-menu {
+  position: fixed;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 15px 30px;
+  padding: 15px 30px 15px 15px;
+  background: white;
   color: $greenish;
+  transition: all 0.4s ease;
+  z-index: 1;
     
   > img {
     order: 2;
@@ -69,7 +74,16 @@ img { max-width: 100%; }
     margin: 0;
     font-size: 30px;
     
-    &:hover { cursor: pointer; }
+    &:hover { cursor: pointer; }    
+  }
+  
+  .sticky & {
+    padding: 10px 15px 10px 15px;
+    border-bottom: 1px solid $light-gray;
+    
+    img {
+      height: 30px;
+    }
   }
 }
 
@@ -182,6 +196,16 @@ img { max-width: 100%; }
   transform: translateX(-100%);
   transition: all 0.4s ease;
   border-right: 1px solid #777;
+  
+  .drawer-open & { transform: translateX(0); }
+  
+  > .fa-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 30px;
+    color: $greenish;
+  }
 }
 .nav-menu {
   margin: 70px 0 20px;
@@ -227,7 +251,9 @@ img { max-width: 100%; }
 
 
 // Sections
-.next-event { 
+.next-event {
+  margin-top: 70px;
+   
   .title {
     margin: 15px 0;
     padding: 0 0 15px;
@@ -468,7 +494,8 @@ img { max-width: 100%; }
     display: flex;
   }
   .nav-menu,
-  #drawer-toggle {
+  #drawer-toggle,
+  .nav-social > .fa-close {
     display: none;
   }
   
@@ -514,6 +541,8 @@ img { max-width: 100%; }
   }
   
   .logo-menu {
+    position: static;
+    width: auto;
     margin: 0;
     align-items: center;
     padding: 15px 0;
@@ -527,6 +556,13 @@ img { max-width: 100%; }
     > label { display: none;}
     img { order: 0; height: 50px; }
     img, .motto, .main-menu { width: auto; }
+    
+    .sticky & {
+      padding: 15px 0;
+      border-bottom: none;
+      
+      img { height: 50px; }
+    }
   }
   .main-menu {
     text-align: right;
@@ -541,6 +577,8 @@ img { max-width: 100%; }
 
 
   .next-event {
+    margin-top: 0;
+    
     .event-img, 
     .event-info { width: 50%; }
     

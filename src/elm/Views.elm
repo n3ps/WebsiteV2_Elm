@@ -181,7 +181,7 @@ logoMenu address =
     , a [href "javascript:void", onClick address ToggleMenu, for "drawer-toggle"] [iconFor "bars"]
     ]
 
-navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons]
+navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose]
 
 iconFor icn = i [class <| "fa fa-" ++ icn] []
   
@@ -193,6 +193,9 @@ navMenu =
     , li [] [a [href "#sponsors"   ] [text "Sponsors"]]
     , li [] [a [href "#contact-us" ] [text "Contact Us"]]
     ]
+
+navClose =
+  iconFor "close"
 
 slackForm =
   div [class "slack-form"]
