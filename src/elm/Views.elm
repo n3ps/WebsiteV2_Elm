@@ -20,7 +20,7 @@ view : Address Action -> Model -> Html
 view address model = 
   let ctnrClass = "container" ++ if model.openMenu then " drawer-open" else ""
   in div [class ctnrClass]
-    [ header [] [menuToggle address, navSocial, logoMenu address]
+    [ header [] [navSocial address, logoMenu address]
     , nextEvent model.next
     , pastEvents model.pastEvents
     , featuredVideos model.videos model.seed
@@ -32,13 +32,10 @@ view address model =
         , div [class "copyright"] [text "© Winnipeg Dot Net User Group 2015"]
         , div [class "version"] [text "v0.1 aabbcc"]
         ]
+    , div [class "backdrop"] []
     ]
 
 img_asset s = "/assets/images/" ++ s
-
-menuToggle address = 
-  a [onClick address ToggleMenu, id "drawer-toggle"] [iconFor "bars"]
-  -- input [id "drawer-toggle", type' "checkbox"] []
 
 contactView members =
   let
@@ -178,10 +175,10 @@ logoMenu address =
         , div [class "description"] [text "A user group full of lambdas, folds, MVC, ponnies and rainbows!"]
         ]
     , div [class "main-menu"] menuOptions
-    , a [href "javascript:void", onClick address ToggleMenu, for "drawer-toggle"] [iconFor "bars"]
+    , a [class "button-open", href "javascript:void", onClick address ToggleMenu] [iconFor "bars"]
     ]
 
-navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose]
+navSocial address = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose address]
 
 iconFor icn = i [class <| "fa fa-" ++ icn] []
   
@@ -194,8 +191,8 @@ navMenu =
     , li [] [a [href "#contact-us" ] [text "Contact Us"]]
     ]
 
-navClose =
-  iconFor "close"
+navClose address =
+  a [class "button-close", href "javascript:void", onClick address ToggleMenu] [iconFor "close"]
 
 slackForm =
   div [class "slack-form"]
