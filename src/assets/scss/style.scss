@@ -201,6 +201,17 @@ img { max-width: 100%; }
   .subscribe, .twitter-stream {
     flex: 0 0 100%;
   }
+
+  .twitter-stream {
+    .twitter-timeline {
+      width: 100% !important;
+
+      html body .timeline-Widget {
+        width:100%;
+        max-width: 100%;
+      }
+    }
+  }
 }
 .subscribe {
   background: $event-blue-background;
