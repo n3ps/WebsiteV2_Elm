@@ -2,6 +2,7 @@ module Views (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Signal exposing (Signal, Address)
 import Date
 import Array
@@ -17,8 +18,9 @@ anchor s = a [name s] []
 
 view : Address Action -> Model -> Html
 view address model = 
-  div [class "container"]
-    [ header [] [menuToggle, navSocial, logoMenu]
+  let ctnrClass = "container" ++ if model.openMenu then " drawer-open" else ""
+  in div [class ctnrClass]
+    [ header [] [menuToggle address, navSocial, logoMenu address]
     , nextEvent model.next
     , pastEvents model.pastEvents
     , featuredVideos model.videos model.seed
@@ -33,6 +35,10 @@ view address model =
     ]
 
 img_asset s = "/assets/images/" ++ s
+
+menuToggle address = 
+  a [onClick address ToggleMenu, id "drawer-toggle"] [iconFor "bars"]
+  -- input [id "drawer-toggle", type' "checkbox"] []
 
 contactView members =
   let
@@ -64,7 +70,8 @@ sponsorsView sponsors  =
       xs -> xs |> List.map sponsorImage
 
   in section [class "sponsors"] 
-      [ header  [] [text "Sponsors"]
+      [ anchor "sponsors"
+      , header  [] [text "Sponsors"]
       , article [] sponsorMap
       ]
 
@@ -91,7 +98,8 @@ featuredVideos videos seed =
 listRegistration =
   div [class "list-n-twitter"]
     [ article [class "subscribe"]
-        [ header [] [text "Want to make sure you don't miss a meeting?"]
+        [ anchor "subscribe"
+        , header [] [text "Want to make sure you don't miss a meeting?"]
         , div [class "signup"] [text "Then take a minute and sign up for the Winnipeg .NET user group mailing list!"]
         , div [class "schedule"] [text "You can be on top of our event schedule, and all you need to do is check you email. Sign up now and don't miss another meeting." ]
         , footer [] [aBlank [href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
@@ -115,7 +123,8 @@ pastEvents events =
         ]
   in
     section [class "past-events"]
-      [ header  [class "event-header"] [text "Past Events"] 
+      [ anchor "past-events"
+      , header  [class "event-header"] [text "Past Events"] 
       , article [] (events |> List.take 4 |> List.map mkWidget)
       , footer [] [aBlank [href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"] [text "View All"]]
       ]
@@ -124,8 +133,8 @@ nextEvent =
   let 
     showEvent e =
       section [class "next-event"]
-        [
-          header  [class "event-header"] [text "Next Event"]
+        [ anchor "next-event"
+        , header  [class "event-header"] [text "Next Event"]
         , article []
             [ div [class "event-img"] [img [src e.logo] []]
             , div [class "event-info"]
@@ -161,7 +170,7 @@ menuOptions =
   , a [title "Contact us", href "#contact-us"] [text "Contact"]
   ]
 
-logoMenu =
+logoMenu address =
   div [class "logo-menu"]
     [ img [src "/assets/images/logo.png"] []
     , section [class "motto"]
@@ -169,7 +178,7 @@ logoMenu =
         , div [class "description"] [text "A user group full of lambdas, folds, MVC, ponnies and rainbows!"]
         ]
     , div [class "main-menu"] menuOptions
-    , label [class "fa fa-bars", for "drawer-toggle"] []
+    , a [href "javascript:void", onClick address ToggleMenu, for "drawer-toggle"] [iconFor "bars"]
     ]
 
 navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons]
@@ -178,11 +187,11 @@ iconFor icn = i [class <| "fa fa-" ++ icn] []
   
 navMenu =
   ul [class "nav-menu"]
-    [ li [] [a [] [text "Next Event"]]
-    , li [] [a [] [text "Past Events"]]
-    , li [] [a [] [text "Subscribe"]]
-    , li [] [a [] [text "Sponsors"]]
-    , li [] [a [] [text "Contact Us"]]
+    [ li [] [a [href "#next-event" ] [text "Next Event"]]
+    , li [] [a [href "#past-events"] [text "Past Events"]]
+    , li [] [a [href "#subscribe"  ] [text "Subscribe"]]
+    , li [] [a [href "#sponsors"   ] [text "Sponsors"]]
+    , li [] [a [href "#contact-us" ] [text "Contact Us"]]
     ]
 
 slackForm =
@@ -222,5 +231,3 @@ socialIcons =
     , linkTo gitHub   "github"   "Fork" "Fork us on GitHub and collaborate"
     ]
 
-menuToggle = 
-  input [id "drawer-toggle", type' "checkbox"] []
