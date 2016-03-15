@@ -169,6 +169,7 @@ logoMenu =
         , div [class "description"] [text "A user group full of lambdas, folds, MVC, ponnies and rainbows!"]
         ]
     , div [class "main-menu"] menuOptions
+    , label [class "fa fa-bars", for "drawer-toggle"] []
     ]
 
 navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons]
@@ -222,4 +223,4 @@ socialIcons =
     ]
 
 menuToggle = 
-  input [type' "checkbox", class "drawer-toggle"] []
+  input [id "drawer-toggle", type' "checkbox"] []
