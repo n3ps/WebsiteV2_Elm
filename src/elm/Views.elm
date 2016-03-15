@@ -230,4 +230,3 @@ socialIcons =
     , linkTo youTube  "youtube-play" "Subscribe" "Subscribe to our YouTube channel to get notifications"
     , linkTo gitHub   "github"   "Fork" "Fork us on GitHub and collaborate"
     ]
-
