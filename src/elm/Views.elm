@@ -175,7 +175,7 @@ logoMenu address =
         , div [class "description"] [text "A user group full of lambdas, folds, MVC, ponnies and rainbows!"]
         ]
     , div [class "main-menu"] menuOptions
-    , a [class "button-open", href "javascript:void", onClick address ToggleMenu] [iconFor "bars"]
+    , a [class "button-open", href "javascript:void(0)", onClick address ToggleMenu] [iconFor "bars"]
     ]
 
 navSocial address = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose address]
@@ -192,7 +192,7 @@ navMenu =
     ]
 
 navClose address =
-  a [class "button-close", href "javascript:void", onClick address ToggleMenu] [iconFor "close"]
+  a [class "button-close", href "javascript:void(0)", onClick address ToggleMenu] [iconFor "close"]
 
 slackForm =
   div [class "slack-form"]
