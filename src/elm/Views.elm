@@ -14,7 +14,7 @@ import Actions exposing (..)
 import Models exposing (..)
 
 aBlank xs = a <| target "_blank"::xs
-anchor s = a [name s] []
+anchor s = a [id s] []
 
 view : Address Action -> Model -> Html
 view address model = 

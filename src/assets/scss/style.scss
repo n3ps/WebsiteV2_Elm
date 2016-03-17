@@ -168,6 +168,13 @@ img { max-width: 100%; }
   line-height: 45px;
 }
 
+a[id]::before {
+  content: ""; 
+  display: block;
+  height: 70px;
+  margin: -70px 0 0;
+}
+
 .nav-social { 
   display: block; 
   position: fixed;
@@ -246,6 +253,7 @@ img { max-width: 100%; }
   background-color: black;
   opacity: .5;
   z-index: 99;
+  transition: all 0.4s ease;
 }
 
 
@@ -294,7 +302,7 @@ img { max-width: 100%; }
     width: 50%;
   }
   
-  .title { font-size: 17px; }
+  .title { font-size: 15px; }
   .date { color: #737a94; font-size: 12px; }
     
   &:nth-child(even) {
@@ -495,6 +503,7 @@ img { max-width: 100%; }
   .nav-menu,
   .logo-menu > .button-open,
   .nav-social > .button-close,
+  a[id]::before,
   .backdrop {
     display: none;
   }
@@ -623,7 +632,6 @@ img { max-width: 100%; }
   .past-event {
     width: 25%;
     max-width: 250px;
-    min-height: 300px;
     padding: 0 7.5px;
     flex-flow: column nowrap;
     text-align: center;
@@ -663,7 +671,7 @@ img { max-width: 100%; }
     }
     
     .info { padding: 0; }
-    .title { padding: 15px 15px .5em; }
+    .title { padding: 15px 10px .5em; }
     .date { flex-grow: 1; } 
   }
 
@@ -732,6 +740,10 @@ img { max-width: 100%; }
     
     .event-info { padding-right: 0; }
     > article { display: flex; }
+  }
+  
+  .past-event {
+      .title { font-size: 17px; }
   }
   
   .sponsors article .sponsor { flex: 1; }
