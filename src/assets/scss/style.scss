@@ -56,18 +56,21 @@ img { max-width: 100%; }
 .logo-menu {
   position: fixed;
   width: 100%;
+  height: 70px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px 15px 15px;
+  padding-left: 15px;
+  padding-right: 15px;
   background: white;
   color: $greenish;
-  transition: all 0.4s ease;
-  z-index: 1;
+  transition: height 0.4s ease;
+  z-index: 98;
     
   > img {
     order: 2;
     height: 40px;
+    transition: height 0.4s ease;
   }
   
   > .button-open {
@@ -79,7 +82,7 @@ img { max-width: 100%; }
   }
   
   .sticky & {
-    padding: 10px 15px 10px 15px;
+    height: 55px;
     border-bottom: 1px solid $light-gray;
     
     img {
@@ -367,9 +370,7 @@ a[id]::before {
 }
 
 
-.contact-us {
-  background: #eee;
-  
+.contact-us {  
   .message {
     color: #080808;
     padding: 1.5em 15px;
@@ -552,9 +553,11 @@ a[id]::before {
   .logo-menu {
     position: static;
     width: auto;
+    height: 97px;
     margin: 0;
     align-items: center;
-    padding: 15px 0;
+    padding-left: 0;
+    padding-right: 0;
     text-align: left;
     
     .motto {
@@ -567,7 +570,7 @@ a[id]::before {
     img, .motto, .main-menu { width: auto; }
     
     .sticky & {
-      padding: 15px 0;
+      height: 97px;
       border-bottom: none;
       
       img { height: 50px; }
@@ -684,7 +687,9 @@ a[id]::before {
   }
   
   
-  .contact-us { 
+  .contact-us {
+    background: #eee;
+     
     .members {
       flex-flow: row nowrap;
       justify-content: center;
@@ -792,7 +797,8 @@ a[id]::before {
 ,.next-event
 ,.past-events
 ,.featured-videos
-,.list-n-twitter
+,.subscribe
+,.twitter-stream
 ,.sponsors
 ,.contact-us
 ,.main-footer 
