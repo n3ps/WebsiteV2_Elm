@@ -9,6 +9,7 @@ import Array
 import Date.Format exposing (format)
 import Random
 import Random.Array as RA
+import String
 
 import Actions exposing (..)
 import Models exposing (..)
@@ -126,8 +127,11 @@ pastEvents events =
       , footer [] [aBlank [href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"] [text "View All"]]
       ]
 
+single tag t = tag [] [text t]
+
 nextEvent =
   let 
+    mkParagraphs txt = txt |> String.split "\n" |> List.map (single p)
     showEvent e =
       section [class "next-event"]
         [ anchor "next-event"
@@ -137,7 +141,7 @@ nextEvent =
             , div [class "event-info"]
                 [ div [class "title"] [text e.title]
                 , label [] [text "Description"]
-                , div [class "description"] [text e.description ]
+                , div [class "description"] (mkParagraphs e.description)
                 , div [class "date"       ]
                     [ div [class "icon"] [iconFor "calendar"]
                     , text <| format "%A, %B %e, %Y" e.date
