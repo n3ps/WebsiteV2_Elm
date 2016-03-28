@@ -1,0 +1,54 @@
+.button {
+  display: inline-block;
+  min-width: 100px;
+  font-size: 12px;
+  line-height: 30px;
+  height: 30px;
+  border-radius: 15px;
+  padding: 0 10px;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 2px;
+  background-color: $greenish;
+  color: white;
+  
+  &.-small {
+    font-size: 10px;
+  }
+  
+  &.-large {
+    min-width: 140px;
+    font-size: 13px;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 20px;
+    padding: 0 20px;
+  }
+  
+  &.-xlarge {
+    font-size: 15px;
+  }
+  
+  &.-outline {
+    background-color: transparent;
+    border: 1px solid white;
+    
+    &:hover {
+      opacity: 0.75;
+    }
+  }
+}
+
+
+@media (min-width: $screen-sm-min) {
+  .button {
+    height: 28px;
+    line-height: 28px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 14px;
+  }
+}

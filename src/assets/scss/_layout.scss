@@ -1,0 +1,141 @@
+*,
+:after,
+:before {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  background: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.container {
+  margin: 0 auto;
+
+  &:before { 
+    content: ""; 
+    display: table;
+  }
+}
+
+img {
+  max-width: 100%;
+}
+
+.sponsors > article {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+a[id]::before {
+  content: "";
+  display: block;
+  height: 56px;
+  margin: -56px 0 0;
+}
+
+.past-events > footer { 
+  text-align: center; 
+}
+
+.list-n-twitter {
+  z-index: 2;
+  position: relative;
+}
+
+.sponsors {
+  z-index: 1;
+  position: relative;
+  background-color: white;
+}
+
+.main-footer {
+  background: $gray5;
+  color: white;
+  text-align: center;
+  padding: 40px 10px 20px;
+  
+  a { color: white; text-decoration: none; }
+  a + a { margin-left: 20px; }
+  
+  .menu {
+    border-bottom: 1px solid $text-gray;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+@media (min-width: $screen-sm-min) { 
+  .container > header {
+    padding: 0 15px;
+  }
+  
+  .next-event > article,
+  .past-events > article,
+  .featured-videos > article,
+  .sponsors > article,
+  .list-n-twitter,
+  .members {
+    display: flex;
+  }
+  
+  .past-events > article { 
+    padding: 10px 12.5px; 
+  }
+  
+  .featured-videos > article {
+    padding: 15px 0;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .featured-videos {
+    background: $gray1;
+    padding-top: 15px;
+    
+    > article {
+      background: white;
+    }
+  }
+  
+  .list-n-twitter {
+    background: $gray1;
+    padding: 15px 0;
+    justify-content: center; 
+  }
+    
+  .subscribe,
+  .twitter-stream { 
+    width: 50%;
+    max-width: 500px;
+    
+    > iframe {
+      display: block !important;
+    }
+  }
+  
+  .sponsors {   
+    > article {
+      padding: 0 15px;
+    }
+  }
+  
+  .members {
+    justify-content: space-around;
+  }
+}
+
+@media (min-width: $screen-md-min) { 
+  .container > header,
+  .next-event > article,
+  .past-events > article,
+  .featured-videos > header,
+  .featured-videos > article,
+  .sponsors > article,
+  .contact-us > article {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

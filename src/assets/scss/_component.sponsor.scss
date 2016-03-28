@@ -1,0 +1,24 @@
+.sponsor {
+  padding: 15px 0;
+  text-align: center;
+  width: 50%;
+  
+  img {
+    width: auto;
+    max-height: 60px;
+    vertical-align: middle;
+    filter: grayscale(100%);
+  }
+  
+  img:hover {
+    filter: none;
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  .sponsor { width: 33%; } 
+}
+
+@media (min-width: $screen-md-min) {
+  .sponsor { width: 16.66%; } 
+}

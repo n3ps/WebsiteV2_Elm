@@ -1,0 +1,80 @@
+.contact-us { 
+  background-color: $gray1;
+  
+  .message {
+    display: none;
+  }
+}
+
+.member {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  position: relative;
+  height: 130px;
+  color: white;
+  box-shadow: 0 8px 24px -6px #222;
+  
+  > .avatar {
+    height: 100%;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  > .avatar > img { 
+    border-radius: 50%; 
+  }
+  
+  > .avatar,
+  > .name,
+  > .role,
+  > .contact {
+    width: 50%;
+    text-align: center;
+  }
+  
+  &:nth-child(1) { background-color: $event-blue-background; z-index: 3; }
+  &:nth-child(2) { background-color: $bg2; z-index: 2;
+    > .avatar { order: 1;}
+  }
+  &:nth-child(3) { background-color: $bg3; z-index: 1; }
+}
+
+@media (min-width: $screen-sm-min) { 
+  .contact-us {
+    .message {
+      display: block;
+    }
+    
+    > article {
+      padding: 30px 15px 60px;
+    }
+  }
+  
+  .member {
+    width: 33%;
+    max-width: 230px;
+    padding: 15px 0;
+    height: auto;
+    flex-flow: column nowrap;
+    border-radius: 4px;
+    box-shadow: none;
+    
+    > .avatar,
+    > .name,
+    > .role,
+    > .contact {
+      width: 100%;
+    }
+    
+    > .avatar {
+      margin-bottom: 15px;
+    }
+    
+    &:nth-child(2) > .avatar { 
+      order: 0; 
+    }
+  }
+}
