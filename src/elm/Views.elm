@@ -49,16 +49,16 @@ contactView members =
   let
     mailTo = (++) "mailto:winnipegdotnet@gmail.com?subject=ATTN: "
     mkContact mbr = div [class "member", title mbr.name]
-      [ img [src mbr.image] []
+      [ div [class "avatar"] [img [src mbr.image] []]
       , divT "name" mbr.name
       , divT "role" mbr.role
-      , divL "contact" [a [href <| mailTo mbr.contact] [text mbr.contact]]
+      , divL "contact" [a [class "button -outline -small", href <| mailTo mbr.contact] [text mbr.contact]]
       ] 
     contactMap = case members of
       [] -> [text "No contact information available at the moment"]
       xs -> xs |> List.map mkContact
 
-  in section [class "contact-us"] 
+  in section [class "contact-us section"] 
       [ anchor "contact-us"
       , header  [] [text "Contact Us"]
       , article [] 
@@ -74,7 +74,7 @@ sponsorsView sponsors  =
       [] -> [text "No sponsors information available at the moment"]
       xs -> xs |> List.map sponsorImage
 
-  in section [class "sponsors"] 
+  in section [class "sponsors section"] 
       [ anchor "sponsors"
       , header  [] [text "Sponsors"]
       , article [] sponsorMap
@@ -91,7 +91,7 @@ featuredVideos videos seed =
       , div [class "descr"] [text v.description]
       ]
 
-  in section [class "featured-videos"]
+  in section [class "featured-videos section"]
     [ anchor "watch-us"
     , header [] 
         [span [class "title"] [text "Winnipeg .NET User Group"],
@@ -107,10 +107,11 @@ listRegistration =
         , header [] [text "Want to make sure you don't miss a meeting?"]
         , divT "signup"   "Then take a minute and sign up for the Winnipeg .NET user group mailing list!"
         , divT "schedule" "You can be on top of our event schedule, and all you need to do is check you email. Sign up now and don't miss another meeting." 
-        , footer [] [aBlank [href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
+        , footer [] [aBlank [class "button -outline -large", href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
         ]
     , article [class "twitter-stream"]
-        [aBlank [class "twitter-timeline", href "https://twitter.com/wpgnetug", attribute "data-widget-id" "709094677924818945"]
+        [aBlank [class "twitter-timeline", href "https://twitter.com/wpgnetug", 
+          attribute "data-widget-id" "709094677924818945", attribute "data-tweet-limit" "3"]
           [text "twitter stream. NEED a stream!"]
         ]
     ]
@@ -123,15 +124,15 @@ pastEvents events =
         , div [class "info"]
             [ divT "title" e.title
             , divT "date"  (e.date |> format "%b %e, %Y")
-            , divL "view" [aBlank [href e.link] [text "View"]]
+            , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
             ]
         ]
   in
-    section [class "past-events"]
+    section [class "past-events section"]
       [ anchor "past-events"
-      , header  [class "event-header"] [text "Past Events"] 
+      , header  [] [text "Past Events"] 
       , article [] (events |> List.take 4 |> List.map mkWidget)
-      , footer [] [aBlank [href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"] [text "View All"]]
+      , footer [] [aBlank [class "button -large", href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"] [text "View All"]]
       ]
 
 
@@ -139,25 +140,27 @@ nextEvent =
   let 
     mkParagraphs txt = txt |> String.split "\n" |> List.map (single p)
     showEvent e =
-      section [class "next-event"]
+      section [class "next-event section"]
         [ anchor "next-event"
-        , simple header "event-header" "Next Event"
+        , simple header "header" "Next Event"
         , article []
             [ image "event-img" e.logo
             , div [class "event-info"]
                 [ simple div "title" e.title
                 , single label "Description"
                 , mkParagraphs e.description |> simple' div "description"
-                , div [class "date"       ]
-                    [ icon "icon" "calendar"
-                    , text <| format "%A, %B %e, %Y" e.date
+                , div [class "details"]
+                    [ div [class "date"       ]
+                        [ icon "icon" "calendar"
+                        , text <| format "%A, %B %e, %Y" e.date
+                        ]
+                    , div [class "venue"]
+                        [ icon "icon" "map-marker"
+                        , divT "name"    e.venue.name
+                        , divT "address" e.venue.address
+                        ]
                     ]
-                , div [class "venue"]
-                    [ icon "icon" "map-marker"
-                    , divT "name"    e.venue.name
-                    , divT "address" e.venue.address
-                    ]
-                , footer [] [aBlank [href e.link] [text "Count me in!"]]
+                , footer [] [aBlank [class "button -large", href e.link] [text "Count me in!"]]
                 ]
             ]
         ]

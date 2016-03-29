@@ -1,0 +1,50 @@
+.featured-videos {
+  .title { 
+    display: none; 
+  }
+}
+
+.video {
+  padding: 15px;
+  
+  img { width: 100%; }
+}
+
+@media (min-width: $screen-sm-min) {
+  .video {
+    width: 50%;
+    
+    & + .video { margin-top: 0; }
+  } 
+  
+  .featured-videos {
+    > header {
+      padding: 0 15px;
+      display: flex;
+      justify-content: space-between;
+      background: white;
+      border-bottom: 1px solid $light-gray;
+    }
+
+    > header,
+    > header a {
+      color: $text-gray;  
+    }
+    
+    .title {
+      display: block;
+    }
+    
+    .fa-youtube-play {
+      font-size: 2em;
+      margin-right: 5px;
+      vertical-align: middle;
+      color: #e54432;
+    }
+  }
+}
+
+
+@media (min-width: $screen-lg-min) {  
+  .video { width: 33%; }
+}

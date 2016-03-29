@@ -1,0 +1,58 @@
+.next-event {
+  .event-img img {
+    width: 100%;
+    vertical-align: middle;
+  }
+  
+  .header, > header,
+  label, // TODO: Use class
+  .description,
+  .venue {
+    display: none;
+  }
+  
+  .event-info,
+  .details,
+  footer { // TODO: Use class
+    padding: 0 30px;
+  }
+  
+  footer { // TODO: Use class
+   text-align: center;
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  .next-event {
+    > header {
+      display: flex;
+    }
+    
+    label, // TODO: Use class
+    .description,
+    .venue {
+      display: block;
+    }
+    
+    //.details { padding: 10px 0; }
+    
+    .name,
+    .address { display: inline; }
+  } 
+}
+
+@media (min-width: $screen-md-min) {
+  .next-event {
+    > article {
+      display: flex;
+      flex-flow: row wrap;
+    }
+    
+    .event-img,
+    .event-info,
+    .details,
+    footer { // TODO: Use class 
+      width: 50%;
+    }
+  }
+}
