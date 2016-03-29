@@ -166,10 +166,14 @@ nextEvent =
         ]
 
     workingOnIt =
-      section [class "next-event"]
+      section [class "next-event section -empty"]
         [
-          header  [] [text "We are working on it"]
-        , article [] [text "Like crazy"]
+          header  [] [text "Next Event"]
+        , article [] 
+            [ img [src "/assets/images/placeholder.png"] []
+            , span [class "placeholder"] [
+              text "We are working on it"]
+            ]
         ]
 
   in Maybe.map showEvent >> Maybe.withDefault workingOnIt

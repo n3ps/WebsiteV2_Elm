@@ -20,6 +20,30 @@
   footer { // TODO: Use class
    text-align: center;
   }
+  
+  &.-empty {
+    
+    > article {
+      display: block;
+      position: relative;
+    }
+    
+    > article > img {
+      width: 100%;
+      display: block;
+      margin: 15px auto;
+    }
+    
+    .placeholder {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, 0) rotate(-5deg);
+      padding-left: 9%;
+      max-width: 30%;
+      transform-origin: center;
+    }
+  }
 }
 
 @media (min-width: $screen-sm-min) {
@@ -38,6 +62,18 @@
     
     .name,
     .address { display: inline; }
+    
+    &.-empty {
+      article > img {
+        max-width: 70%;
+      }
+      
+      .placeholder {
+        top: 34%;
+        padding-left: 7%;
+        max-width: 24%;
+      }
+    }
   } 
 }
 

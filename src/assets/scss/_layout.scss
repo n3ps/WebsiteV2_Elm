@@ -17,6 +17,10 @@ html, body {
     content: ""; 
     display: table;
   }
+  
+  > header + section {
+    margin-top: 70px;
+  }
 }
 
 img {
@@ -69,6 +73,10 @@ a[id]::before {
 @media (min-width: $screen-sm-min) { 
   .container > header {
     padding: 0 15px;
+    
+    & + section {
+      margin-top: 0;
+    }
   }
   
   .past-events > article,
