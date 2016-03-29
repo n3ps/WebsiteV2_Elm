@@ -24,10 +24,8 @@
 
 @media (min-width: $screen-sm-min) {
   .next-event {
-    > .header,
-    > .content {
+    > header {
       display: flex;
-      flex-flow: row wrap;
     }
     
     label, // TODO: Use class
@@ -36,16 +34,25 @@
       display: block;
     }
     
+    //.details { padding: 10px 0; }
+    
+    .name,
+    .address { display: inline; }
+  } 
+}
+
+@media (min-width: $screen-md-min) {
+  .next-event {
+    > article {
+      display: flex;
+      flex-flow: row wrap;
+    }
+    
     .event-img,
     .event-info,
     .details,
     footer { // TODO: Use class 
       width: 50%;
     }
-    
-    .details { padding: 10px 0; }
-    
-    .name,
-    .address { display: inline; }
-  } 
+  }
 }

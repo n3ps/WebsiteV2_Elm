@@ -71,7 +71,6 @@ a[id]::before {
     padding: 0 15px;
   }
   
-  .next-event > article,
   .past-events > article,
   .featured-videos > article,
   .sponsors > article,
@@ -80,14 +79,14 @@ a[id]::before {
     display: flex;
   }
   
-  .past-events > article { 
-    padding: 10px 12.5px; 
-  }
-  
-  .featured-videos > article {
-    padding: 15px 0;
-    flex-wrap: wrap;
-    justify-content: space-between;
+  .past-events {
+    > article { 
+      padding: 15px 12.5px 0; 
+    }
+    
+    > footer {
+      padding-bottom: 15px;
+    }
   }
   
   .featured-videos {
@@ -95,6 +94,9 @@ a[id]::before {
     padding-top: 15px;
     
     > article {
+      padding: 15px 0;
+      flex-wrap: wrap;
+      justify-content: space-between;
       background: white;
     }
   }

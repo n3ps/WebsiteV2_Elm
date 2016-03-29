@@ -111,10 +111,23 @@
   &:nth-child(4) .fa-github { color: black; font-size: 2em; }
 }
 
+.drawer-open .backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: black;
+  opacity: .5;
+  z-index: 99;
+  transition: all 0.4s ease;
+}
+
 @media (min-width: $screen-sm-min) {
   .nav-menu,
   .button-open, 
-  .button-close { 
+  .button-close,
+  .backdrop { 
     display: none; 
   }
   
