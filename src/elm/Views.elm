@@ -149,19 +149,19 @@ nextEvent =
                 [ simple div "title" e.title
                 , single label "Description"
                 , mkParagraphs e.description |> simple' div "description"
-                , div [class "details"]
-                    [ div [class "date"       ]
-                        [ icon "icon" "calendar"
-                        , text <| format "%A, %B %e, %Y" e.date
-                        ]
-                    , div [class "venue"]
-                        [ icon "icon" "map-marker"
-                        , divT "name"    e.venue.name
-                        , divT "address" e.venue.address
-                        ]
-                    ]
-                , footer [] [aBlank [class "button -large", href e.link] [text "Count me in!"]]
                 ]
+            , div [class "details"]
+                [ div [class "date"       ]
+                    [ icon "icon" "calendar"
+                    , text <| format "%A, %B %e, %Y" e.date
+                    ]
+                , div [class "venue"]
+                    [ icon "icon" "map-marker"
+                    , divT "name"    e.venue.name
+                    , divT "address" e.venue.address
+                    ]
+                ]
+            , footer [] [aBlank [class "button -large", href e.link] [text "Count me in!"]]
             ]
         ]
 
