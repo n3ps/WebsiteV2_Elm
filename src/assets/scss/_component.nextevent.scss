@@ -14,7 +14,7 @@
   .event-info,
   .details,
   footer { // TODO: Use class
-    padding: 0 30px;
+    padding: 0 30px 15px;
   }
   
   footer { // TODO: Use class
@@ -58,10 +58,24 @@
       display: block;
     }
     
-    //.details { padding: 10px 0; }
+    .icon { 
+      min-width: 26px;
+      text-align: center;
+      vertical-align: middle;
+       
+      > .fa { font-size: 2em; }
+    }
+    
+    .venue {
+      display: flex;
+      flex-flow: column wrap;
+      height: 3em;
+    }
     
     .name,
-    .address { display: inline; }
+    .address { 
+      width: calc(100% - 34px); 
+    }
     
     &.-empty {
       article > img {
