@@ -29,16 +29,11 @@ body {
 
 .next-event {
   .title {
-    @include font(30px, 1.1, 1em);
+    @include font(24px, 1.1, .5em);
     color: $title-gray;
+    margin-top: .5em;
   }
-  
-  label { // TODO: Use class
-    @include font(12px, 1.4, 1em);
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  
+    
   .description {
     @include font(13px, 1.4, 1em);
   }
@@ -97,6 +92,20 @@ body {
 }
 
 
+@media (min-width: $screen-sm-min) {
+  .next-event {
+    .title {
+      font-size: 30px;
+    }
+    
+    // pseudo presenter text
+    .description > p:last-child {
+      font-size: 12px;
+      line-height: 1.5
+    }
+  }
+}
+
 @media (min-width: $screen-md-min) {
   .info > .title,
   .member .name {
@@ -104,6 +113,6 @@ body {
   }
   
   .next-event .title {
-    margin-top: 1em;
+    margin-top: 0;
   }
 }
