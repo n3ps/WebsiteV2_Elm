@@ -4,7 +4,7 @@
     vertical-align: middle;
   }
   
-  .header, > header,
+  > .header,
   label, // TODO: Use class
   .description,
   .venue {
@@ -48,7 +48,7 @@
 
 @media (min-width: $screen-sm-min) {
   .next-event {
-    > header {
+    > .header {
       display: flex;
     }
     
