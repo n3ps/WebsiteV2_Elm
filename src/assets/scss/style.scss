@@ -18,6 +18,7 @@ $screen-sm-min: 768px;
 $screen-md-min: 992px;
 $screen-lg-min: 1200px;
 
+$max-width: 1200px;
 
 @import "mixins";
 @import "layout";
