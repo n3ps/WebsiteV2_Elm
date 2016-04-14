@@ -165,7 +165,7 @@ nextEvent =
             ]
         ]
 
-    workingOnIt =
+    noEvent =
       section [class "next-event section -empty"]
         [
           header  [] [text "Next Event"]
@@ -174,6 +174,13 @@ nextEvent =
             , span [class "placeholder"] [
               text "We are working on it"]
             ]
+        ]
+        
+    workingOnIt =
+      section [class "next-event section"]
+        [ simple header "header" "Next Event"
+        , div [class "loading"] 
+            [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]  
         ]
 
   in Maybe.map showEvent >> Maybe.withDefault workingOnIt

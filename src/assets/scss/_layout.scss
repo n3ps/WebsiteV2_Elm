@@ -27,6 +27,10 @@ img {
   max-width: 100%;
 }
 
+.loading {
+  @extend %h-center;
+}
+
 .sponsors > article {
   display: flex;
   flex-flow: row wrap;
