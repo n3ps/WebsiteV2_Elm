@@ -14,6 +14,7 @@ import String
 import Actions exposing (..)
 import Models exposing (..)
 
+iconFor icn = i [class <| "fa fa-" ++ icn] []
 aBlank xs = a <| target "_blank"::xs
 anchor s = a [id s] []
 single tag t = tag [] [text t]
@@ -23,6 +24,8 @@ icon c fa = div [class c] [iconFor fa]
 image c url = div [class c] [img [src url] []]
 divT = simple div
 divL = simple' div
+
+loading = divL "loading" [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]
 
 view : Address Action -> Model -> Html
 view address model = 
@@ -127,11 +130,21 @@ pastEvents events =
             , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
             ]
         ]
+
+    ofEmpty l = if List.isEmpty l then Nothing else Just l
+
+    content =
+      events 
+      |> List.take 4 
+      |> List.map mkWidget
+      |> ofEmpty
+      |> Maybe.withDefault [loading]
+
   in
     section [class "past-events section"]
       [ anchor "past-events"
       , header  [] [text "Past Events"] 
-      , article [] (events |> List.take 4 |> List.map mkWidget)
+      , article [] content
       , footer [] [aBlank [class "button -large", href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"] [text "View All"]]
       ]
 
@@ -176,14 +189,13 @@ nextEvent =
             ]
         ]
         
-    workingOnIt =
+    loadingEvents =
       section [class "next-event section"]
         [ simple header "header" "Next Event"
-        , div [class "loading"] 
-            [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]  
+        , loading
         ]
 
-  in Maybe.map showEvent >> Maybe.withDefault workingOnIt
+  in Maybe.map showEvent >> Maybe.withDefault loadingEvents
 
 menuOptions =
   [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
@@ -204,7 +216,6 @@ logoMenu address =
 
 navSocial address = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose address]
 
-iconFor icn = i [class <| "fa fa-" ++ icn] []
   
 navMenu =
   let
