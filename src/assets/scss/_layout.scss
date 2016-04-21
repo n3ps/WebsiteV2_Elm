@@ -27,6 +27,15 @@ img {
   max-width: 100%;
 }
 
+.loading {
+  @extend %h-center;
+  
+  .next-event &,
+  .past-events & {
+    min-height: 200px;
+  }
+}
+
 .sponsors > article {
   display: flex;
   flex-flow: row wrap;
