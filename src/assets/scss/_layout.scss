@@ -29,6 +29,11 @@ img {
 
 .loading {
   @extend %h-center;
+  
+  .next-event &,
+  .past-events & {
+    min-height: 200px;
+  }
 }
 
 .sponsors > article {
