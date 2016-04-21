@@ -133,20 +133,25 @@ pastEvents events =
 
     ofEmpty l = if List.isEmpty l then Nothing else Just l
 
+    eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
+    mkArticle content =
+      [ article [] content
+      , footer [] [aBlank [class "button -large", href eventBrite] [text "View All"]]
+      ]
+
     content =
       events 
       |> List.take 4 
       |> List.map mkWidget
       |> ofEmpty
+      |> Maybe.map mkArticle
       |> Maybe.withDefault [loading]
 
   in
     section [class "past-events section"]
-      [ anchor "past-events"
+      ([ anchor "past-events"
       , header  [] [text "Past Events"] 
-      , article [] content
-      , footer [] [aBlank [class "button -large", href "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"] [text "View All"]]
-      ]
+      ] ++ content)
 
 
 nextEvent =
