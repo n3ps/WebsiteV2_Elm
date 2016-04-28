@@ -29,7 +29,9 @@ update msg model =
     LoadVideos   videos  -> ({model | videos  = videos}, Cmd.none)
     LoadEvents   events  -> (assignEvents events model, Cmd.none)
     ToggleMenu           -> ({model | openMenu=not model.openMenu}, Cmd.none)
+    ToggleSlack          -> ({model | showSlack=not model.showSlack}, Cmd.none)
     _ -> (model, Cmd.none)
+
 
 assignEvents events model =
   let

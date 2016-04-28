@@ -10,6 +10,7 @@ type Msg
   | LoadEvents   (List Event)
   | LoadVideos   (List Video)
   | ToggleMenu
+  | ToggleSlack
   | ResourceFailed Http.Error
   | NoOp
 

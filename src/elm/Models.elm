@@ -12,6 +12,7 @@ type alias Model =
   , board : List BoardMember
   , videos : List Video
   , openMenu: Bool
+  , showSlack: Bool
   }
 
 emptyModel = 
@@ -22,6 +23,7 @@ emptyModel =
     sponsors = [],
     videos = [],
     openMenu = False
+  , showSlack = False
   }
 
 type alias Video = 

@@ -29,7 +29,7 @@ view : Model -> Html Msg
 view model = 
   let ctnrClass = "container" ++ if model.openMenu then " drawer-open" else ""
   in div [class ctnrClass]
-    [ header [] [navSocial, logoMenu]
+    [ header [] [navSocial model, logoMenu]
     , nextEvent model.next
     , pastEvents model.pastEvents
     , featuredVideos model.videos
@@ -219,12 +219,16 @@ logoMenu =
     , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]
     ]
 
-navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose]
+navSocial model = 
+  let 
+    slackSignup = if model.showSlack then " slack-signup" else ""
+  in 
+    divL ("nav-social" ++ slackSignup) [navMenu, slackForm, socialIcons, navClose]
 
   
 navMenu =
   let
-    toLi (lnk, t) = li [] [a [href <| "#" ++ lnk] [text t]]
+    toLi (lnk, t) = li [] [a [href <| "#" ++ lnk, onClick ToggleMenu] [text t]]
     items = [
        ("next-event", "Next Event")
       ,("past-events", "Past Events")
@@ -245,7 +249,7 @@ slackForm =
             [ class "form-group"]
             [ iconFor "slack"
             , input [type' "email", id "email", class "form-control", placeholder "you@domain.com"] []
-            , label [for "email"] [text "slack"]
+            , label [for "email", onClick ToggleSlack] [text "slack"]
             ]
         ]
     ]
