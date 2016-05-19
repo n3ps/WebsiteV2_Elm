@@ -1,17 +1,15 @@
-module Views (..) where
+module Views exposing (..) 
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Signal exposing (Signal, Address)
 import Date
 import Array
 import Date.Format exposing (format)
 import Random
-import Random.Array as RA
 import String
 
-import Actions exposing (..)
+import Messages exposing (..)
 import Models exposing (..)
 
 iconFor icn = i [class <| "fa fa-" ++ icn] []
@@ -27,14 +25,14 @@ divL = simple' div
 
 loading = divL "loading" [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]
 
-view : Address Action -> Model -> Html
-view address model = 
+view : Model -> Html Msg
+view model = 
   let ctnrClass = "container" ++ if model.openMenu then " drawer-open" else ""
   in div [class ctnrClass]
-    [ header [] [navSocial address, logoMenu address]
+    [ header [] [navSocial, logoMenu]
     , nextEvent model.next
     , pastEvents model.pastEvents
-    , featuredVideos model.videos model.seed
+    , featuredVideos model.videos
     , listRegistration
     , sponsorsView model.sponsors
     , contactView model.board
@@ -72,7 +70,9 @@ contactView members =
 
 sponsorsView sponsors  =
   let
-    sponsorImage sponsor = div [class "sponsor", title sponsor.name] [aBlank [href sponsor.url] [img [src sponsor.image] []] ]
+    sponsorImage sponsor = 
+      div [class "sponsor", title sponsor.name] 
+        [aBlank [href sponsor.url] [img [src sponsor.image] []] ]
     sponsorMap = case sponsors of
       [] -> [text "No sponsors information available at the moment"]
       xs -> xs |> List.map sponsorImage
@@ -84,9 +84,9 @@ sponsorsView sponsors  =
       ]
 
 
-featuredVideos videos seed =
+featuredVideos videos =
   let
-    featured = videos |> Array.fromList |> RA.shuffle seed |> fst |> Array.toList |> List.take 3
+    featured = videos |> List.take 3
 
     mkFeature v = div [class "video"]
       [ header [] [aBlank [href v.link] [img [src v.thumbnail] []]]
@@ -208,7 +208,7 @@ menuOptions =
   , a [title "Contact us", href "#contact-us"] [text "Contact"]
   ]
 
-logoMenu address =
+logoMenu =
   div [class "logo-menu"]
     [ img [src "/assets/images/logo.png"] []
     , section [class "motto"]
@@ -216,10 +216,10 @@ logoMenu address =
         , divT "description" "A user group full of lambdas, folds, MVC, ponnies and rainbows!"
         ]
     , div [class "main-menu"] menuOptions
-    , a [class "button-open", href "javascript:void(0)", onClick address ToggleMenu] [iconFor "bars"]
+    , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]
     ]
 
-navSocial address = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose address]
+navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose]
 
   
 navMenu =
@@ -234,8 +234,8 @@ navMenu =
       ]
   in ul [class "nav-menu"] (items |> List.map toLi)
 
-navClose address =
-  a [class "button-close", href "javascript:void(0)", onClick address ToggleMenu] [iconFor "close"]
+navClose =
+  a [class "button-close", href "javascript:void(0)", onClick ToggleMenu] [iconFor "close"]
 
 slackForm =
   div [class "slack-form"]

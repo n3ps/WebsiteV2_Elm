@@ -18,7 +18,7 @@ First make sure you install all packages by running `npm install`
     ├── package.json
     ├── src
     │   ├── elm
-    │   │   ├── Actions.elm
+    │   │   ├── Messages.elm
     │   │   ├── Main.elm
     │   │   ├── Models.elm
     │   │   └── Views.elm
