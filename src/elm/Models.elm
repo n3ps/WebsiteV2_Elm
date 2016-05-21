@@ -1,7 +1,7 @@
-module Models where
+module Models exposing (..)
 
 import Date exposing (Date)
-import Random exposing (Seed)
+import Random 
 import Json.Decode as Json exposing ((:=))
 import Json.Decode.Extra as JsonX
 
@@ -11,7 +11,6 @@ type alias Model =
   , sponsors : List Sponsor
   , board : List BoardMember
   , videos : List Video
-  , seed: Seed
   , openMenu: Bool
   }
 
@@ -22,7 +21,6 @@ emptyModel =
     pastEvents = [],
     sponsors = [],
     videos = [],
-    seed = Random.initialSeed 0,
     openMenu = False
   }
 
