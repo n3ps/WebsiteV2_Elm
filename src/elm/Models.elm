@@ -13,27 +13,34 @@ type alias Model =
   , videos : List Video
   , openMenu: Bool
   , showSlack: Bool
+  , slackEmail: String
   }
 
 emptyModel = 
-  { 
-    next = Nothing,
-    board = [],
-    pastEvents = [],
-    sponsors = [],
-    videos = [],
-    openMenu = False
+  { next = Nothing
+  , board = []
+  , pastEvents = []
+  , sponsors = []
+  , videos = []
+  , openMenu = False
   , showSlack = False
+  , slackEmail = ""
   }
 
 type alias Video = 
-  {title:String,
-   link: String,
-   description: String,
-   date: Date,
-   thumbnail: String}
+  { title:String
+  , link: String
+  , description: String
+  , date: Date
+  , thumbnail: String
+  }
 
-type alias BoardMember = {name:String, image: String, role: String, contact: String}
+type alias BoardMember = 
+  { name: String
+  , image: String
+  , role: String
+  , contact: String
+  }
 
 type alias Venue = { name : String , address : String }
 
@@ -49,14 +56,24 @@ type alias Event =
   , status: EventStatus
   }
 
+withStatus st e = e.status == st
+
 type alias Sponsor = 
   { name : String
   , url : String
   , image : String
   }
 
+type alias SlackResponse = 
+  {ok: Bool, error: Maybe String}
+
 -- Decoders
 --
+slackDecoder =
+  Json.object2 
+    SlackResponse
+    ("ok"    := Json.bool)
+    (Json.maybe <| "error" := Json.string)
 
 venueDecoder = 
   Json.object2

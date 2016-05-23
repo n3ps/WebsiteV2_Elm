@@ -8,6 +8,7 @@ import Array
 import Date.Format exposing (format)
 import Random
 import String
+import Json.Decode as Json
 
 import Messages exposing (..)
 import Models exposing (..)
@@ -23,11 +24,12 @@ image c url = div [class c] [img [src url] []]
 divT = simple div
 divL = simple' div
 
+toggleIf val addition css = css ++ (if val then " " ++ addition else "")
 loading = divL "loading" [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]
 
 view : Model -> Html Msg
 view model = 
-  let ctnrClass = "container" ++ if model.openMenu then " drawer-open" else ""
+  let ctnrClass = "container" |> toggleIf model.openMenu "drawer-open"
   in div [class ctnrClass]
     [ header [] [navSocial model, logoMenu]
     , nextEvent model.next
@@ -219,11 +221,12 @@ logoMenu =
     , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]
     ]
 
+
 navSocial model = 
   let 
-    slackSignup = if model.showSlack then " slack-signup" else ""
+    classes = "nav-social" |> toggleIf model.showSlack "slack-signup"
   in 
-    divL ("nav-social" ++ slackSignup) [navMenu, slackForm, socialIcons, navClose]
+    divL classes [navMenu, slackForm model, socialIcons, navClose]
 
   
 navMenu =
@@ -241,16 +244,28 @@ navMenu =
 navClose =
   a [class "button-close", href "javascript:void(0)", onClick ToggleMenu] [iconFor "close"]
 
-slackForm =
+onEnter : msg -> msg -> Attribute msg
+onEnter fail success =
+  let
+    tagger code = if code == 13 then success else fail
+  in
+    on "keyup" (Json.map tagger keyCode)
+
+slackForm model =
   div [class "slack-form"]
-    [ Html.form
-        [title "Chat with us on Slack", action "https://wpgdotnet.slack.com"]
-        [ div
-            [ class "form-group"]
-            [ iconFor "slack"
-            , input [type' "email", id "email", class "form-control", placeholder "you@domain.com"] []
-            , label [for "email", onClick ToggleSlack] [text "slack"]
-            ]
+    [ div
+        [ class "form-group"]
+        [ iconFor "slack"
+        , input 
+            [type' "email"
+            , id "email"
+            , class "form-control"
+            , value model.slackEmail
+            , placeholder "you@domain.com"
+            , onInput UpdateEmail
+            , onEnter NoOp PostToSlack
+            ] []
+        , label [for "email", onClick ToggleSlack] [text "slack"]
         ]
     ]
 

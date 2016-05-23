@@ -1,10 +1,12 @@
-module Main exposing (..)
+port module Main exposing (..)
 
 import Task exposing (Task)
 import Html.App as Html
 import Date
-import Http
+import Http exposing (..)
 import Random
+import Json.Decode as Json exposing ((:=))
+import Json.Encode as JsonEnc
 
 import Views exposing (..)
 import Models exposing (..)
@@ -21,33 +23,82 @@ init : (Model, Cmd Msg)
 init =
   (emptyModel, Cmd.batch [getSponsors, getBoard, getEvents, getVideos])
 
+port notify : (String, String) -> Cmd msg
+
+type Notification = Info | Error | Warning | Success
+
+notifyUser : Notification -> String -> Cmd msg
+notifyUser kind msg =
+  let
+    msgType = case kind of
+      Info    -> "info"
+      Error   -> "error"
+      Warning -> "warning"
+      Success -> "success"
+  in
+    notify (msgType, msg)
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
   case msg of
-    LoadSponsors loaded  -> ({model | sponsors= loaded }, Cmd.none)
-    LoadBoard    members -> ({model | board   = members}, Cmd.none)
-    LoadVideos   videos  -> ({model | videos  = videos}, Cmd.none)
-    LoadEvents   events  -> (assignEvents events model, Cmd.none)
-    ToggleMenu           -> ({model | openMenu=not model.openMenu}, Cmd.none)
-    ToggleSlack          -> ({model | showSlack=not model.showSlack}, Cmd.none)
-    _ -> (model, Cmd.none)
+    LoadSponsors loaded  -> { model | sponsors = loaded } ! []
+    LoadBoard    members -> { model | board    = members} ! []
+    LoadVideos   videos  -> { model | videos   = videos}  ! []
+    LoadEvents   events  -> ( model |> assignEvents events) ! []
+    ToggleMenu           -> { model | openMenu = not model.openMenu} ! []
+    ToggleSlack          -> { model | showSlack = not model.showSlack} ! []
+    UpdateEmail  email   -> { model | slackEmail = email} ! []
+    PostToSlack          -> model ! [postToSlack model.slackEmail]
+    SlackSuccess res     -> { model | showSlack = False, slackEmail = "" } ! [notifySlackResponse res]
+    ApiFail error        -> model ! [notifyUser Error <| errorMsg error]
+    _ -> model ! []
 
+notifySlackResponse res =
+  let 
+    error = res.error |> Maybe.withDefault "(no details, sorry)"
+  in
+    case res.ok of
+      True  -> notifyUser Success "Registration sent!"
+      False -> notifyUser Error  <| "Something happened with Slack: " ++ error
+
+errorMsg e =
+  case e of
+    Http.Timeout -> "Sorry, the call timeout"
+    Http.NetworkError        -> "Sorry, network error"
+    Http.UnexpectedPayload s -> "Sorry, unexpected payload " ++ s
+    Http.BadResponse code s  -> "Sorry, server responded with " ++ s
 
 assignEvents events model =
   let
-    completed = events |> List.filter (\e -> e.status == Completed)
-    maybeNext = events |> List.filter (\e -> e.status == Live) |> List.head
-  in {model | next=maybeNext, pastEvents=completed}
+    completed = events |> List.filter (withStatus Completed)
+    maybeNext = events |> List.filter (withStatus Live) |> List.head
+  in 
+    { model | next = maybeNext, pastEvents = completed }
 
--- Api queries
+-----------------
+-- Api queries --
+-----------------
+urlFor =
+  (++) "http://localhost:8083/api/"
+  -- (++) "http://api.winnipegdotnet.org/api/"
 
-apiUrl = "http://api.winnipegdotnet.org/api/"
--- apiUrl = "http://localhost:8083/api/"
+
+postToSlack : Email -> Cmd Msg
+postToSlack email =
+  Http.send Http.defaultSettings
+    { verb = "POST"
+    , headers = [("Content-type", "application/x-www-form-urlencoded")]
+    , url = urlFor "slack"
+    , body = Http.string <| "email=" ++ (uriEncode email)
+    }
+  |> fromJson slackDecoder
+  |> Task.perform ApiFail SlackSuccess
 
 getResource resource decoder success =
-  apiUrl ++ resource
+  resource
+  |> urlFor
   |> Http.get decoder
-  |> Task.perform ResourceFailed success
+  |> Task.perform ApiFail success
 
 getEvents = getResource "events" eventDecoder LoadEvents
 

@@ -43,7 +43,7 @@ gulp.task("clean:prod", function(cb) {
 // Compiles the SASS files and moves them into the "assets/stylesheets" directory
 gulp.task("styles", function () {
   // Looks at the style.scss file for what to include and creates a style.css file
-  return gulp.src("src/assets/scss/style.scss")
+  return gulp.src(["src/assets/scss/style.scss", "src/assets/scss/*.css"])
     .pipe(plumber())
     .pipe($.sass())
     .on('error', function(err){
