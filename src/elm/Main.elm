@@ -1,47 +1,35 @@
-module Main where
+module Main exposing (..)
 
-import StartApp
 import Task exposing (Task)
-import Signal exposing (Signal, Address)
-import Effects exposing (Effects, Never)
-import Html exposing (Html)
+import Html.App as Html
 import Date
 import Http
 import Random
 
 import Views exposing (..)
 import Models exposing (..)
-import Actions exposing (..)
+import Messages exposing (..)
 
---
--- StartApp boilerplate
---
-app = StartApp.start { init = init, view = view, update = update, inputs = [] }
-
-main : Signal Html
-main = app.html
-
-port tasks : Signal (Task Never ())
-port tasks = app.tasks
-
-port randomSeed : Int
+main = 
+  Html.program 
+    { init = init, view = view, update = update, subscriptions = \_ -> Sub.none}
 
 --
 -- My functions
 --
-init : (Model, Effects Action)
+init : (Model, Cmd Msg)
 init =
-  (emptyModel, Effects.batch [getSponsors, getBoard, getEvents, getVideos])
+  (emptyModel, Cmd.batch [getSponsors, getBoard, getEvents, getVideos])
 
-update : Action -> Model -> (Model, Effects Action)
-update action model = 
-  case action of
-    LoadSponsors (Just loaded)  -> ({model | sponsors= loaded }, Effects.none)
-    LoadBoard    (Just members) -> ({model | board   = members}, Effects.none)
-    LoadVideos   (Just videos)  -> ({model | videos  = videos, seed = randomSeed |> Random.initialSeed }, Effects.none)
-    LoadEvents   (Just events)  -> (assignEvents events model, Effects.none)
-    ToggleMenu                  -> ({model | openMenu=not model.openMenu}, Effects.none)
-    _ -> (model, Effects.none)
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model = 
+  case msg of
+    LoadSponsors loaded  -> ({model | sponsors= loaded }, Cmd.none)
+    LoadBoard    members -> ({model | board   = members}, Cmd.none)
+    LoadVideos   videos  -> ({model | videos  = videos}, Cmd.none)
+    LoadEvents   events  -> (assignEvents events model, Cmd.none)
+    ToggleMenu           -> ({model | openMenu=not model.openMenu}, Cmd.none)
+    _ -> (model, Cmd.none)
 
 assignEvents events model =
   let
@@ -54,12 +42,10 @@ assignEvents events model =
 apiUrl = "http://api.winnipegdotnet.org/api/"
 -- apiUrl = "http://localhost:8083/api/"
 
-getResource resource decoder loader =
+getResource resource decoder success =
   apiUrl ++ resource
   |> Http.get decoder
-  |> Task.toMaybe
-  |> Task.map loader
-  |> Effects.task
+  |> Task.perform ResourceFailed success
 
 getEvents = getResource "events" eventDecoder LoadEvents
 
