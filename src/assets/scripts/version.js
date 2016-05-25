@@ -1,0 +1,3 @@
+$(function() {
+  window.version = "<%= version %>";
+});

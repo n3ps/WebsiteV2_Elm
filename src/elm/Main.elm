@@ -24,6 +24,7 @@ init =
   (emptyModel, Cmd.batch [getSponsors, getBoard, getEvents, getVideos])
 
 port notify : (String, String) -> Cmd msg
+port version : String -> Cmd msg
 
 type Notification = Info | Error | Warning | Success
 
