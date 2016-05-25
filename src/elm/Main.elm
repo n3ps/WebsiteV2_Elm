@@ -79,8 +79,8 @@ assignEvents events model =
 -- Api queries --
 -----------------
 urlFor =
-  (++) "http://localhost:8083/api/"
-  -- (++) "http://api.winnipegdotnet.org/api/"
+  -- (++) "http://localhost:8083/api/"
+  (++) "http://api.winnipegdotnet.org/api/"
 
 
 postToSlack : Email -> Cmd Msg
