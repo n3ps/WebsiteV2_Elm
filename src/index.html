@@ -7,6 +7,7 @@
     <script src="/Main.js"></script>
     <script src="/assets/scripts/twitter-feed.js"></script>
     <script src="/assets/scripts/mobile-misc.js"></script>
+    <script src="/assets/scripts/version.js"></script>
     <script src="/assets/scripts/pnotify.custom.min.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700" type="text/css">
@@ -15,7 +16,7 @@
   </head>
   <body>
     <script>
-      var app = Elm.Main.fullscreen();
+      var app = Elm.Main.fullscreen({version: window.version});
       app.ports.notify.subscribe(function(values){
        var type, msg ;
        [type, msg] = values;

@@ -39,6 +39,19 @@ gulp.task("clean:prod", function(cb) {
   return del(["dist"], cb);
 });
 
+var template = require('gulp-template');
+
+gulp.task('version', function(){
+  git.revParse({args:'--short HEAD'}, function (err, hash) {
+    if (err) {
+      console.log('Can not get git hash');
+      hash = "no-hash-here";
+    }
+    gulp.src('src/assets/scripts/version.js')
+      .pipe(template({'version': '2.0.0-' + hash}))
+      .pipe(gulp.dest('serve/assets/scripts/'));
+    });
+});
 
 // Compiles the SASS files and moves them into the "assets/stylesheets" directory
 gulp.task("styles", function () {
@@ -219,7 +232,10 @@ gulp.task("default", ["serve:dev", "watch"]);
 
 // Builds the site but doesn't serve it to you.
 // Delete should run and complete before other tasks.
-gulp.task("build", gulpSequence("clean:dev", ["styles", "copy:dev", "images:dev", "js:dev", "elm"]));
+gulp.task("build", 
+  gulpSequence("clean:dev", ["styles", "copy:dev", "images:dev", "js:dev", "elm"], "version")
+);
+
 
 // Builds your site with the "build" command and then runs all the optimizations on
 // it and outputs it to "./dist"

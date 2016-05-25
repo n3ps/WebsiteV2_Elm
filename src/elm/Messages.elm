@@ -16,6 +16,7 @@ type Msg
   | SlackSuccess SlackResponse
   | UpdateEmail  Email
   | ApiFail      Http.Error
+  | SetVersion   String
   | NoOp
 
 

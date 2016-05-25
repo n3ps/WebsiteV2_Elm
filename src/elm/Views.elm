@@ -41,7 +41,7 @@ view model =
     , footer [class "main-footer"] 
         [ divL "menu" menuOptions
         , divT "copyright" "© Winnipeg Dot Net User Group 2015"
-        , divT "version" "v0.1 aabbcc"
+        , divT "version" model.version
         ]
     , div [class "backdrop"] []
     ]
