@@ -8,6 +8,7 @@ import Array
 import Date.Format exposing (format)
 import Random
 import String
+import Json.Decode as Json
 
 import Messages exposing (..)
 import Models exposing (..)
@@ -23,13 +24,14 @@ image c url = div [class c] [img [src url] []]
 divT = simple div
 divL = simple' div
 
+toggleIf val addition css = css ++ (if val then " " ++ addition else "")
 loading = divL "loading" [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]
 
 view : Model -> Html Msg
 view model = 
-  let ctnrClass = "container" ++ if model.openMenu then " drawer-open" else ""
+  let ctnrClass = "container" |> toggleIf model.openMenu "drawer-open"
   in div [class ctnrClass]
-    [ header [] [navSocial, logoMenu]
+    [ header [] [navSocial model, logoMenu]
     , nextEvent model.next
     , pastEvents model.pastEvents
     , featuredVideos model.videos
@@ -219,12 +221,17 @@ logoMenu =
     , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]
     ]
 
-navSocial = div [class "nav-social"] [navMenu, slackForm, socialIcons, navClose]
+
+navSocial model = 
+  let 
+    classes = "nav-social" |> toggleIf model.showSlack "slack-signup"
+  in 
+    divL classes [navMenu, slackForm model, socialIcons, navClose]
 
   
 navMenu =
   let
-    toLi (lnk, t) = li [] [a [href <| "#" ++ lnk] [text t]]
+    toLi (lnk, t) = li [] [a [href <| "#" ++ lnk, onClick ToggleMenu] [text t]]
     items = [
        ("next-event", "Next Event")
       ,("past-events", "Past Events")
@@ -237,19 +244,30 @@ navMenu =
 navClose =
   a [class "button-close", href "javascript:void(0)", onClick ToggleMenu] [iconFor "close"]
 
-slackForm =
+onEnter : msg -> msg -> Attribute msg
+onEnter fail success =
+  let
+    tagger code = if code == 13 then success else fail
+  in
+    on "keyup" (Json.map tagger keyCode)
+
+slackForm model =
   div [class "slack-form"]
-    [ Html.form
-        [class "form-inline", title "Chat with us on Slack"]
-        [ div
-            [class "form-group"]
-            [ label [] [iconFor "slack", text "slack"]
-            , div
-                [class "input-group"]
-                [ input [title "Enter your email and submit to get an invite", class "form-control", type' "text", placeholder "you@domain.com"] []
-                , div [class "input-group-addon"]
-                   [iconFor "chevron-right"]
-    ] ] ] ]
+    [ div
+        [ class "form-group"]
+        [ iconFor "slack"
+        , input 
+            [type' "email"
+            , id "email"
+            , class "form-control"
+            , value model.slackEmail
+            , placeholder "you@domain.com"
+            , onInput UpdateEmail
+            , onEnter NoOp PostToSlack
+            ] []
+        , label [for "email", onClick ToggleSlack] [text "slack"]
+        ]
+    ]
 
 youTube  = "https://www.youtube.com/channel/UC6OzdI6-htXE_97zamJRaaA"
 

@@ -1,8 +1,9 @@
 module Messages exposing (..)
 
-import Models exposing (Sponsor, BoardMember, Event, Video)
+import Models exposing (Sponsor, BoardMember, Event, Video, SlackResponse)
 import Http
 
+type alias Email = String
 
 type Msg
   = LoadSponsors (List Sponsor)
@@ -10,7 +11,11 @@ type Msg
   | LoadEvents   (List Event)
   | LoadVideos   (List Video)
   | ToggleMenu
-  | ResourceFailed Http.Error
+  | ToggleSlack
+  | PostToSlack
+  | SlackSuccess SlackResponse
+  | UpdateEmail  Email
+  | ApiFail      Http.Error
   | NoOp
 
 
