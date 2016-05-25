@@ -74,7 +74,7 @@ assignEvents events model =
     completed = events |> List.filter (withStatus Completed)
     maybeNext = events |> List.filter (withStatus Live) |> List.head
   in 
-    { model | next = maybeNext, pastEvents = completed }
+    { model | next = Loaded maybeNext, pastEvents = completed }
 
 -----------------
 -- Api queries --

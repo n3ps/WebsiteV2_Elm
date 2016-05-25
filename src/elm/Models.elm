@@ -5,8 +5,10 @@ import Random
 import Json.Decode as Json exposing ((:=))
 import Json.Decode.Extra as JsonX
 
+type Resource val = Loading | Loaded val
+
 type alias Model = 
-  { next : Maybe Event
+  { next : Resource (Maybe Event)
   , pastEvents : List Event
   , sponsors : List Sponsor
   , board : List BoardMember
@@ -18,7 +20,7 @@ type alias Model =
   }
 
 emptyModel = 
-  { next = Nothing
+  { next = Loading
   , board = []
   , pastEvents = []
   , sponsors = []
