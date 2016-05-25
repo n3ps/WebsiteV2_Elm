@@ -14,6 +14,7 @@ type alias Model =
   , openMenu: Bool
   , showSlack: Bool
   , slackEmail: String
+  , version: String
   }
 
 emptyModel = 
@@ -25,6 +26,7 @@ emptyModel =
   , openMenu = False
   , showSlack = False
   , slackEmail = ""
+  , version = "0.0.0-no-hash-here"
   }
 
 type alias Video = 

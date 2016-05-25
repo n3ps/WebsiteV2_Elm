@@ -16,7 +16,7 @@
   </head>
   <body>
     <script>
-      var app = Elm.Main.fullscreen();
+      var app = Elm.Main.fullscreen({version: window.version});
       app.ports.notify.subscribe(function(values){
        var type, msg ;
        [type, msg] = values;

@@ -13,18 +13,17 @@ import Models exposing (..)
 import Messages exposing (..)
 
 main = 
-  Html.program 
-    { init = init, view = view, update = update, subscriptions = \_ -> Sub.none}
+  Html.programWithFlags
+    { init = init, view = view, update = update, subscriptions = (\_ -> Sub.none) }
 
 --
 -- My functions
 --
-init : (Model, Cmd Msg)
-init =
-  (emptyModel, Cmd.batch [getSponsors, getBoard, getEvents, getVideos])
+init : {version:String} -> (Model, Cmd Msg)
+init {version} =
+  ({emptyModel|version=version}, Cmd.batch [getSponsors, getBoard, getEvents, getVideos])
 
 port notify : (String, String) -> Cmd msg
-port version : String -> Cmd msg
 
 type Notification = Info | Error | Warning | Success
 
@@ -52,6 +51,7 @@ update msg model =
     PostToSlack          -> model ! [postToSlack model.slackEmail]
     SlackSuccess res     -> { model | showSlack = False, slackEmail = "" } ! [notifySlackResponse res]
     ApiFail error        -> model ! [notifyUser Error <| errorMsg error]
+    SetVersion v         -> { model | version = v } ! []
     _ -> model ! []
 
 notifySlackResponse res =
@@ -86,12 +86,12 @@ urlFor =
 
 postToSlack : Email -> Cmd Msg
 postToSlack email =
-  Http.send Http.defaultSettings
-    { verb = "POST"
-    , headers = [("Content-type", "application/x-www-form-urlencoded")]
-    , url = urlFor "slack"
-    , body = Http.string <| "email=" ++ (uriEncode email)
-    }
+  { verb = "POST"
+  , headers = [("Content-type", "application/x-www-form-urlencoded")]
+  , url = urlFor "slack"
+  , body = Http.string <| "email=" ++ (uriEncode email)
+  }
+  |> Http.send Http.defaultSettings
   |> fromJson slackDecoder
   |> Task.perform ApiFail SlackSuccess
 

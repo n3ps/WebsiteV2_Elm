@@ -1,3 +1,1 @@
-$(function() {
-  window.version = "<%= version %>";
-});
+window.version = "<%= version %>";
