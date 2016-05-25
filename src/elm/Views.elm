@@ -156,7 +156,7 @@ pastEvents events =
       ] ++ content)
 
 
-nextEvent =
+nextEvent resource =
   let 
     mkParagraphs txt = txt |> String.split "\n" |> List.map (single p)
     showEvent e =
@@ -185,7 +185,7 @@ nextEvent =
             ]
         ]
 
-    noEvent =
+    workingOnIt =
       section [class "next-event section -empty"]
         [
           header  [] [text "Next Event"]
@@ -202,7 +202,10 @@ nextEvent =
         , loading
         ]
 
-  in Maybe.map showEvent >> Maybe.withDefault loadingEvents
+  in 
+      case resource of
+        Loading -> loadingEvents
+        Loaded next -> next |> Maybe.map showEvent |> Maybe.withDefault workingOnIt
 
 menuOptions =
   [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
