@@ -187,8 +187,8 @@ nextEvent resource =
 
     workingOnIt =
       section [class "next-event section -empty"]
-        [
-          header  [] [text "Next Event"]
+        [ anchor "next-event"
+        , header  [] [text "Next Event"]
         , article [] 
             [ img [src "/assets/images/placeholder.png"] []
             , span [class "placeholder"] [
@@ -198,7 +198,8 @@ nextEvent resource =
         
     loadingEvents =
       section [class "next-event section"]
-        [ simple header "header" "Next Event"
+        [ anchor "next-event"
+        , simple header "header" "Next Event"
         , loading
         ]
 
@@ -276,6 +277,9 @@ youTube  = "https://www.youtube.com/channel/UC6OzdI6-htXE_97zamJRaaA"
 
 socialIcons =
   let 
+    twitter  = "https://twitter.com/wpgnetug" 
+    facebook = "https://www.facebook.com/winnipegdotnet"
+    gitHub   = "https://github.com/WpgDotNetUG/WebsiteV2_Elm"
     icon id =
       span
         [class "fa-stack fa-2x"]
@@ -283,10 +287,14 @@ socialIcons =
         , i [class <| "fa fa-stack-1x fa-" ++ id] []
         ]
       
-    linkTo link i t hint = a [title hint, class "sm-link", href link, target "_blank"] [icon i, text t]
-    twitter  = "https://twitter.com/wpgnetug" 
-    facebook = "https://www.facebook.com/winnipegdotnet"
-    gitHub   = "https://github.com/WpgDotNetUG/WebsiteV2_Elm"
+    linkTo link i t hint = 
+      a 
+        [title hint
+        , class "sm-link"
+        , href link
+        , onClick ToggleMenu
+        , target "_blank"] 
+        [icon i, text t]
   in 
   div [class "social-icons"]
     [ linkTo twitter  "twitter"  "Follow" "Follow us on Twitter."
