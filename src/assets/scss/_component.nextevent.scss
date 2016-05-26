@@ -119,13 +119,24 @@
       padding-bottom: 10px;
     }
     
+    .details {
+      margin-top: 20px;
+    }
+    
+    .description > p {
+      margin-top: .5em;
+      margin-bottom: .5em;
+    }
+    
     // pseudo presenter text
     .description > p:last-child {
       width: 50%;
       position: absolute;
       bottom: 100px;
       left: 0;
-      padding: 0 15px;
+      margin: 0;
+      padding-left: 15px;
+      font-style: italic;
     }
     
     footer {
