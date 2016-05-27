@@ -17,6 +17,8 @@ type alias Model =
   , showSlack: Bool
   , slackEmail: String
   , version: String
+  , isSummer : Bool
+  , isWinter : Bool
   }
 
 emptyModel = 
@@ -29,6 +31,8 @@ emptyModel =
   , showSlack = False
   , slackEmail = ""
   , version = "0.0.0-no-hash-here"
+  , isSummer = False
+  , isWinter = False
   }
 
 type alias Video = 
@@ -85,24 +89,36 @@ venueDecoder =
     ("name"    := Json.string)
     ("address" := Json.string)
 
-eventDecoder  =
+eventsDecoder  =
   let 
     toStatus s = case s of
       "live" -> Live
       "completed" -> Completed
       _ -> Unknown
+
+    config name =
+      Json.at ["config"]
+      <| name := Json.bool
+
+    eventList = 
+      Json.at ["events"]
+      <| Json.list 
+      <| Json.object7
+          Event
+          ("title"       := Json.string)
+          ("date"        := JsonX.date)
+          ("description" := Json.string)
+          ("logo"        := Json.string)
+          ("venue"       := venueDecoder)
+          ("link"        := Json.string)
+          ("status"      := Json.map toStatus Json.string)
   
-  in Json.at ["events"]
-  <| Json.list 
-  <| Json.object7
-      Event
-      ("title"       := Json.string)
-      ("date"        := JsonX.date)
-      ("description" := Json.string)
-      ("logo"        := Json.string)
-      ("venue"       := venueDecoder)
-      ("link"        := Json.string)
-      ("status"      := Json.map toStatus Json.string)
+  in 
+    Json.object3
+      (,,)
+      (config "isSummer")
+      (config "isWinter")
+      eventList
 
 boardDecoder =
   Json.at ["board"]

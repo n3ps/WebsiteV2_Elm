@@ -8,7 +8,7 @@ type alias Email = String
 type Msg
   = LoadSponsors (List Sponsor)
   | LoadBoard    (List BoardMember)
-  | LoadEvents   (List Event)
+  | LoadEvents   (Bool, Bool, List Event)
   | LoadVideos   (List Video)
   | ToggleMenu
   | ToggleSlack

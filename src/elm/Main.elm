@@ -69,12 +69,12 @@ errorMsg e =
     Http.UnexpectedPayload s -> "Sorry, unexpected payload " ++ s
     Http.BadResponse code s  -> "Sorry, server responded with " ++ s
 
-assignEvents events model =
+assignEvents (isSummer, isWinter, events) model =
   let
     completed = events |> List.filter (withStatus Completed)
     maybeNext = events |> List.filter (withStatus Live) |> List.head
   in 
-    { model | next = Loaded maybeNext, pastEvents = completed }
+    { model | next = Loaded maybeNext, pastEvents = completed, isSummer = isSummer, isWinter = isWinter }
 
 -----------------
 -- Api queries --
@@ -101,7 +101,7 @@ getResource resource decoder success =
   |> Http.get decoder
   |> Task.perform ApiFail success
 
-getEvents = getResource "events" eventDecoder LoadEvents
+getEvents = getResource "events" eventsDecoder LoadEvents
 
 getBoard = getResource "board" boardDecoder LoadBoard
 
