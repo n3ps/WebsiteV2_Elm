@@ -32,7 +32,7 @@ view model =
   let ctnrClass = "container" |> toggleIf model.openMenu "drawer-open"
   in div [class ctnrClass]
     [ header [] [navSocial model, logoMenu]
-    , nextEvent model.next
+    , nextEvent model.next model.isSummer model.isWinter
     , pastEvents model.pastEvents
     , featuredVideos model.videos
     , listRegistration
@@ -156,7 +156,7 @@ pastEvents events =
       ] ++ content)
 
 
-nextEvent resource =
+nextEvent resource isSummer isWinter =
   let 
     mkParagraphs txt = txt |> String.split "\n" |> List.map (single p)
     showEvent e =
