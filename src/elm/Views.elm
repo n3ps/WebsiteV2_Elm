@@ -203,6 +203,19 @@ nextEvent resource =
         , loading
         ]
 
+    summer =
+      section [class "next-event section summer"]
+        [ anchor "next-event"
+        , header  [] [text "Next Event"]
+        , article []
+            [ div [class "text"] 
+                [ div [class "back-in-sep"] [text "We will be back in Sep"]
+                , div [class "message"] [text "Happy Summer!"]
+                , div [class "signature"] [text "C#, F# & VB.NET"]
+                ]
+            ]
+        ]
+
   in 
       case resource of
         Loading -> loadingEvents
