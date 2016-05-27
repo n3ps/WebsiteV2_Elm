@@ -44,7 +44,7 @@ update msg model =
     LoadSponsors loaded  -> { model | sponsors = loaded } ! []
     LoadBoard    members -> { model | board    = members} ! []
     LoadVideos   videos  -> { model | videos   = videos}  ! []
-    LoadEvents   events  -> ( model |> assignEvents events) ! []
+    LoadEvents   (s, p)  -> { model | pastEvents = p, next = Loaded s } ! []
     ToggleMenu           -> { model | openMenu = not model.openMenu} ! []
     ToggleSlack          -> { model | showSlack = not model.showSlack} ! []
     UpdateEmail  email   -> { model | slackEmail = email} ! []
@@ -69,12 +69,6 @@ errorMsg e =
     Http.UnexpectedPayload s -> "Sorry, unexpected payload " ++ s
     Http.BadResponse code s  -> "Sorry, server responded with " ++ s
 
-assignEvents (season, events) model =
-  let
-    completed = events |> List.filter (withStatus Completed)
-    maybeNext = events |> List.filter (withStatus Live) |> List.head
-  in 
-    { model | next = Loaded maybeNext, pastEvents = completed, season = season }
 
 -----------------
 -- Api queries --

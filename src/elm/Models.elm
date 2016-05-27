@@ -7,10 +7,10 @@ import Json.Decode.Extra as JsonX
 
 type Resource val = Loading | Loaded val
 
-type Season = Summer | Winter | Active
+type Season = Summer | Winter | Active (Maybe Event)
 
 type alias Model = 
-  { next : Resource (Maybe Event)
+  { next : Resource Season
   , pastEvents : List Event
   , sponsors : List Sponsor
   , board : List BoardMember
@@ -19,7 +19,6 @@ type alias Model =
   , showSlack: Bool
   , slackEmail: String
   , version: String
-  , season : Season
   }
 
 emptyModel = 
@@ -32,7 +31,6 @@ emptyModel =
   , showSlack = False
   , slackEmail = ""
   , version = "0.0.0-no-hash-here"
-  , season = Active
   }
 
 type alias Video = 
@@ -91,27 +89,33 @@ venueDecoder =
 
 eventsDecoder  =
   let 
-    toStatus s = case s of
-      "live" -> Live
-      "completed" -> Completed
-      _ -> Unknown
+    toStatus s = 
+      case s of
+        "live" -> Live
+        "completed" -> Completed
+        _ -> Unknown
 
-    toSeason cfg =
-      case cfg of
-        (True, _) -> Summer
-        (_, True) -> Winter
-        _         -> Active
 
-    seasonDecoder =
+    seasonDecoder (cfg, events) =
+      let
+        past = events |> List.filter (withStatus Completed)
+        next = events |> List.filter (withStatus Live) |> List.head
+        toSeason cfg =
+          case cfg of
+            (True, _) -> Summer
+            (_, True) -> Winter
+            _         -> Active next
+      in
+        (toSeason cfg, past)
+
+    cfgDecoder =
       Json.object2
         (,)
         ("isSummer" := Json.bool)
         ("isWinter" := Json.bool)
-      |> Json.map toSeason
 
-    eventList = 
-      Json.at ["events"]
-      <| Json.list 
+    eventsDecoder = 
+      Json.list 
       <| Json.object7
           Event
           ("title"       := Json.string)
@@ -125,8 +129,9 @@ eventsDecoder  =
   in 
     Json.object2
       (,)
-      ("config" := seasonDecoder)
-      eventList
+      ("config" := cfgDecoder)
+      ("events" := eventsDecoder)
+    |> Json.map seasonDecoder
 
 boardDecoder =
   Json.at ["board"]
