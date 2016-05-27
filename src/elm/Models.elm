@@ -7,6 +7,8 @@ import Json.Decode.Extra as JsonX
 
 type Resource val = Loading | Loaded val
 
+type Season = Summer | Winter | Active
+
 type alias Model = 
   { next : Resource (Maybe Event)
   , pastEvents : List Event
@@ -17,8 +19,7 @@ type alias Model =
   , showSlack: Bool
   , slackEmail: String
   , version: String
-  , isSummer : Bool
-  , isWinter : Bool
+  , season : Season
   }
 
 emptyModel = 
@@ -31,8 +32,7 @@ emptyModel =
   , showSlack = False
   , slackEmail = ""
   , version = "0.0.0-no-hash-here"
-  , isSummer = False
-  , isWinter = False
+  , season = Active
   }
 
 type alias Video = 
@@ -96,9 +96,18 @@ eventsDecoder  =
       "completed" -> Completed
       _ -> Unknown
 
-    config name =
-      Json.at ["config"]
-      <| name := Json.bool
+    toSeason cfg =
+      case cfg of
+        (True, _) -> Summer
+        (_, True) -> Winter
+        _         -> Active
+
+    seasonDecoder =
+      Json.object2
+        (,)
+        ("isSummer" := Json.bool)
+        ("isWinter" := Json.bool)
+      |> Json.map toSeason
 
     eventList = 
       Json.at ["events"]
@@ -114,10 +123,9 @@ eventsDecoder  =
           ("status"      := Json.map toStatus Json.string)
   
   in 
-    Json.object3
-      (,,)
-      (config "isSummer")
-      (config "isWinter")
+    Json.object2
+      (,)
+      ("config" := seasonDecoder)
       eventList
 
 boardDecoder =

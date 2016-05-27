@@ -69,12 +69,12 @@ errorMsg e =
     Http.UnexpectedPayload s -> "Sorry, unexpected payload " ++ s
     Http.BadResponse code s  -> "Sorry, server responded with " ++ s
 
-assignEvents (isSummer, isWinter, events) model =
+assignEvents (season, events) model =
   let
     completed = events |> List.filter (withStatus Completed)
     maybeNext = events |> List.filter (withStatus Live) |> List.head
   in 
-    { model | next = Loaded maybeNext, pastEvents = completed, isSummer = isSummer, isWinter = isWinter }
+    { model | next = Loaded maybeNext, pastEvents = completed, season = season }
 
 -----------------
 -- Api queries --

@@ -32,7 +32,7 @@ view model =
   let ctnrClass = "container" |> toggleIf model.openMenu "drawer-open"
   in div [class ctnrClass]
     [ header [] [navSocial model, logoMenu]
-    , nextEvent model.next model.isSummer model.isWinter
+    , nextEvent model.next model.season
     , pastEvents model.pastEvents
     , featuredVideos model.videos
     , listRegistration
@@ -156,7 +156,7 @@ pastEvents events =
       ] ++ content)
 
 
-nextEvent resource isSummer isWinter =
+nextEvent resource season =
   let 
     mkParagraphs txt = txt |> String.split "\n" |> List.map (single p)
     showEvent e =
@@ -216,10 +216,15 @@ nextEvent resource isSummer isWinter =
             ]
         ]
 
+    chooseNext event =
+      case season of
+        Summer -> summer
+        Winter -> summer
+        _      -> event |> Maybe.map showEvent |> Maybe.withDefault workingOnIt
   in 
-      case resource of
-        Loading -> loadingEvents
-        Loaded next -> next |> Maybe.map showEvent |> Maybe.withDefault workingOnIt
+    case resource of
+      Loading -> loadingEvents
+      Loaded next -> chooseNext next
 
 menuOptions =
   [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
