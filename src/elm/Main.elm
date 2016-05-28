@@ -29,14 +29,13 @@ type Notification = Info | Error | Warning | Success
 
 notifyUser : Notification -> String -> Cmd msg
 notifyUser kind msg =
-  let
-    msgType = case kind of
-      Info    -> "info"
-      Error   -> "error"
-      Warning -> "warning"
-      Success -> "success"
-  in
-    notify (msgType, msg)
+  (case kind of
+    Info    -> "info"
+    Error   -> "error"
+    Warning -> "warning"
+    Success -> "success")
+  |> flip (,) msg
+  |> notify 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
@@ -55,12 +54,12 @@ update msg model =
     _ -> model ! []
 
 notifySlackResponse res =
-  let 
-    error = res.error |> Maybe.withDefault "(no details, sorry)"
-  in
-    case res.ok of
-      True  -> notifyUser Success "Registration sent!"
-      False -> notifyUser Error  <| "Something happened with Slack: " ++ error
+  if res.ok then notifyUser Success "Registration sent!"
+  else
+    res.error 
+    |> Maybe.withDefault "(no details, sorry)"
+    |> (++) "Something happened with Slack: "
+    |> notifyUser Error  
 
 errorMsg e =
   case e of
