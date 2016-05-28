@@ -209,21 +209,33 @@ nextEvent resource =
         , header  [] [text "Next Event"]
         , article []
             [ div [class "text"] 
-                [ div [class "back-in-sep"] [text "We will be back in Sep"]
+                [ div [class "back-in"] [text "We will be back in Sep"]
                 , div [class "message"] [text "Happy Summer!"]
                 , div [class "signature"] [text "C#, F# & VB.NET"]
                 ]
             ]
         ]
 
-    winter = summer
+    winter = 
+      section [class "next-event section winter"]
+        [ anchor "next-event"
+        , header  [] [text "Next Event"]
+        , article []
+            [ div [class "text"] 
+                [ div [class "back-in"] [text "We will be back in Jan"]
+                , div [class "message"] [text "Happy Holidays!"]
+                , div [class "signature"] [text "C#, F# & VB.NET"]
+                ]
+            ]
+        ]
 
   in 
     case resource of
       Loading -> loadingEvents
       Loaded Summer -> summer
       Loaded Winter -> winter
-      Loaded (Active event) -> event |> Maybe.map showEvent |> Maybe.withDefault workingOnIt
+      Loaded InBetween     -> workingOnIt
+      Loaded (Ready event) -> showEvent event
 
 menuOptions =
   [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]

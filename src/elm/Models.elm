@@ -7,7 +7,7 @@ import Json.Decode.Extra as JsonX
 
 type Resource val = Loading | Loaded val
 
-type Season = Summer | Winter | Active (Maybe Event)
+type Season = Summer | Winter | InBetween | Ready Event
 
 type alias Model = 
   { next : Resource Season
@@ -99,14 +99,18 @@ eventsDecoder  =
     seasonDecoder (cfg, events) =
       let
         past = events |> List.filter (withStatus Completed)
-        next = events |> List.filter (withStatus Live) |> List.head
-        toSeason cfg =
+        season =
           case cfg of
             (True, _) -> Summer
             (_, True) -> Winter
-            _         -> Active next
+            _         -> 
+              events 
+              |> List.filter (withStatus Live) 
+              |> List.head
+              |> Maybe.map Ready 
+              |> Maybe.withDefault InBetween
       in
-        (toSeason cfg, past)
+        (season, past)
 
     cfgDecoder =
       Json.object2
