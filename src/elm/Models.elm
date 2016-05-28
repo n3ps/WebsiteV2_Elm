@@ -12,9 +12,10 @@ type Season = Summer | Winter | InBetween | Ready Event
 type alias Model = 
   { next : Resource Season
   , pastEvents : List Event
-  , sponsors : List Sponsor
-  , board : List BoardMember
-  , videos : List Video
+  , sponsors   : List Sponsor
+  , board      : List BoardMember
+  , videos     : List Video
+  , tweets     : Resource (List Tweet)
   , openMenu: Bool
   , showSlack: Bool
   , slackEmail: String
@@ -27,10 +28,18 @@ emptyModel =
   , pastEvents = []
   , sponsors = []
   , videos = []
+  , tweets = Loading
   , openMenu = False
   , showSlack = False
   , slackEmail = ""
   , version = "0.0.0-no-hash-here"
+  }
+
+type alias TweeterUser ={ id: String, name: String, url: String, image: String }
+
+type alias Tweet =
+  { user: TweeterUser
+  , text: String
   }
 
 type alias Video = 
@@ -166,3 +175,22 @@ videoDecoder =
         ("description" := Json.string)
         ("date"        := JsonX.date)
         ("thumbnail"   := Json.string)
+
+
+tweetDecoder =
+  let
+    userDecoder =
+      Json.object4
+        TweeterUser
+        ("id"  := Json.string)
+        ("url" := Json.string)
+        ("screen_name" := Json.string)
+        ("profile_image_url" := Json.string)
+
+  in
+    Json.at ["tweets"]
+    <| Json.list
+    <| Json.object2
+        Tweet
+        ("user" := userDecoder)
+        ("text" := Json.string)
