@@ -1,6 +1,6 @@
 module Messages exposing (..)
 
-import Models exposing (Sponsor, BoardMember, Event, Video, SlackResponse, Season)
+import Models exposing (Sponsor, BoardMember, Event, Video, SlackResponse, Season, Tweet)
 import Http
 
 type alias Email = String
@@ -10,6 +10,7 @@ type Msg
   | LoadBoard    (List BoardMember)
   | LoadEvents   (Season, List Event)
   | LoadVideos   (List Video)
+  | LoadTweets   (List Tweet)
   | ToggleMenu
   | ToggleSlack
   | PostToSlack

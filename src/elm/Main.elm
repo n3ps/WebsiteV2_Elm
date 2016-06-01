@@ -21,7 +21,7 @@ main =
 --
 init : {version:String} -> (Model, Cmd Msg)
 init {version} =
-  ({emptyModel|version=version}, Cmd.batch [getSponsors, getBoard, getEvents, getVideos])
+  ({emptyModel|version=version}, Cmd.batch [getSponsors, getBoard, getEvents, getVideos, getTweets])
 
 port notify : (String, String) -> Cmd msg
 
@@ -44,6 +44,7 @@ update msg model =
     LoadBoard    members -> { model | board    = members} ! []
     LoadVideos   videos  -> { model | videos   = videos}  ! []
     LoadEvents   (s, p)  -> { model | pastEvents = p, next = Loaded s } ! []
+    LoadTweets   tweets  -> { model | tweets = Loaded tweets } ! []
     ToggleMenu           -> { model | openMenu = not model.openMenu} ! []
     ToggleSlack          -> { model | showSlack = not model.showSlack} ! []
     UpdateEmail  email   -> { model | slackEmail = email} ! []
@@ -94,11 +95,9 @@ getResource resource decoder success =
   |> Http.get decoder
   |> Task.perform ApiFail success
 
-getEvents = getResource "events" eventsDecoder LoadEvents
-
-getBoard = getResource "board" boardDecoder LoadBoard
-
+getEvents   = getResource "events"   eventsDecoder  LoadEvents
+getBoard    = getResource "board"    boardDecoder   LoadBoard
 getSponsors = getResource "sponsors" sponsorDecoder LoadSponsors
-
-getVideos = getResource "videos" videoDecoder LoadVideos
+getVideos   = getResource "videos"   videoDecoder   LoadVideos
+getTweets   = getResource "tweets"   tweetDecoder   LoadTweets
 
