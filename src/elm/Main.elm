@@ -29,14 +29,13 @@ type Notification = Info | Error | Warning | Success
 
 notifyUser : Notification -> String -> Cmd msg
 notifyUser kind msg =
-  let
-    msgType = case kind of
-      Info    -> "info"
-      Error   -> "error"
-      Warning -> "warning"
-      Success -> "success"
-  in
-    notify (msgType, msg)
+  (case kind of
+    Info    -> "info"
+    Error   -> "error"
+    Warning -> "warning"
+    Success -> "success")
+  |> flip (,) msg
+  |> notify 
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
@@ -44,7 +43,7 @@ update msg model =
     LoadSponsors loaded  -> { model | sponsors = loaded } ! []
     LoadBoard    members -> { model | board    = members} ! []
     LoadVideos   videos  -> { model | videos   = videos}  ! []
-    LoadEvents   events  -> ( model |> assignEvents events) ! []
+    LoadEvents   (s, p)  -> { model | pastEvents = p, next = Loaded s } ! []
     ToggleMenu           -> { model | openMenu = not model.openMenu} ! []
     ToggleSlack          -> { model | showSlack = not model.showSlack} ! []
     UpdateEmail  email   -> { model | slackEmail = email} ! []
@@ -55,12 +54,12 @@ update msg model =
     _ -> model ! []
 
 notifySlackResponse res =
-  let 
-    error = res.error |> Maybe.withDefault "(no details, sorry)"
-  in
-    case res.ok of
-      True  -> notifyUser Success "Registration sent!"
-      False -> notifyUser Error  <| "Something happened with Slack: " ++ error
+  if res.ok then notifyUser Success "Registration sent!"
+  else
+    res.error 
+    |> Maybe.withDefault "(no details, sorry)"
+    |> (++) "Something happened with Slack: "
+    |> notifyUser Error  
 
 errorMsg e =
   case e of
@@ -69,12 +68,6 @@ errorMsg e =
     Http.UnexpectedPayload s -> "Sorry, unexpected payload " ++ s
     Http.BadResponse code s  -> "Sorry, server responded with " ++ s
 
-assignEvents events model =
-  let
-    completed = events |> List.filter (withStatus Completed)
-    maybeNext = events |> List.filter (withStatus Live) |> List.head
-  in 
-    { model | next = Loaded maybeNext, pastEvents = completed }
 
 -----------------
 -- Api queries --
@@ -101,7 +94,7 @@ getResource resource decoder success =
   |> Http.get decoder
   |> Task.perform ApiFail success
 
-getEvents = getResource "events" eventDecoder LoadEvents
+getEvents = getResource "events" eventsDecoder LoadEvents
 
 getBoard = getResource "board" boardDecoder LoadBoard
 

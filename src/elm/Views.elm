@@ -32,7 +32,7 @@ view model =
   let ctnrClass = "container" |> toggleIf model.openMenu "drawer-open"
   in div [class ctnrClass]
     [ header [] [navSocial model, logoMenu]
-    , nextEvent model.next
+    , nextEvent model.next 
     , pastEvents model.pastEvents
     , featuredVideos model.videos
     , listRegistration
@@ -203,10 +203,39 @@ nextEvent resource =
         , loading
         ]
 
+    summer =
+      section [class "next-event section summer"]
+        [ anchor "next-event"
+        , header  [] [text "Next Event"]
+        , article []
+            [ div [class "text"] 
+                [ div [class "back-in"] [text "We will be back in Sep"]
+                , div [class "message"] [text "Happy Summer!"]
+                , div [class "signature"] [text "C#, F# & VB.NET"]
+                ]
+            ]
+        ]
+
+    winter = 
+      section [class "next-event section winter"]
+        [ anchor "next-event"
+        , header  [] [text "Next Event"]
+        , article []
+            [ div [class "text"] 
+                [ div [class "back-in"] [text "We will be back in Jan"]
+                , div [class "message"] [text "Happy Holidays!"]
+                , div [class "signature"] [text "C#, F# & VB.NET"]
+                ]
+            ]
+        ]
+
   in 
-      case resource of
-        Loading -> loadingEvents
-        Loaded next -> next |> Maybe.map showEvent |> Maybe.withDefault workingOnIt
+    case resource of
+      Loading -> loadingEvents
+      Loaded Summer -> summer
+      Loaded Winter -> winter
+      Loaded InBetween     -> workingOnIt
+      Loaded (Ready event) -> showEvent event
 
 menuOptions =
   [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]

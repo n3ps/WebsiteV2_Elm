@@ -7,8 +7,10 @@ import Json.Decode.Extra as JsonX
 
 type Resource val = Loading | Loaded val
 
+type Season = Summer | Winter | InBetween | Ready Event
+
 type alias Model = 
-  { next : Resource (Maybe Event)
+  { next : Resource Season
   , pastEvents : List Event
   , sponsors : List Sponsor
   , board : List BoardMember
@@ -85,24 +87,55 @@ venueDecoder =
     ("name"    := Json.string)
     ("address" := Json.string)
 
-eventDecoder  =
+eventsDecoder  =
   let 
-    toStatus s = case s of
-      "live" -> Live
-      "completed" -> Completed
-      _ -> Unknown
+    toStatus s = 
+      case s of
+        "live" -> Live
+        "completed" -> Completed
+        _ -> Unknown
+
+
+    seasonDecoder (cfg, events) =
+      let
+        past = events |> List.filter (withStatus Completed)
+        season =
+          case cfg of
+            (True, _) -> Summer
+            (_, True) -> Winter
+            _         -> 
+              events 
+              |> List.filter (withStatus Live) 
+              |> List.head
+              |> Maybe.map Ready 
+              |> Maybe.withDefault InBetween
+      in
+        (season, past)
+
+    cfgDecoder =
+      Json.object2
+        (,)
+        ("isSummer" := Json.bool)
+        ("isWinter" := Json.bool)
+
+    eventsDecoder = 
+      Json.list 
+      <| Json.object7
+          Event
+          ("title"       := Json.string)
+          ("date"        := JsonX.date)
+          ("description" := Json.string)
+          ("logo"        := Json.string)
+          ("venue"       := venueDecoder)
+          ("link"        := Json.string)
+          ("status"      := Json.map toStatus Json.string)
   
-  in Json.at ["events"]
-  <| Json.list 
-  <| Json.object7
-      Event
-      ("title"       := Json.string)
-      ("date"        := JsonX.date)
-      ("description" := Json.string)
-      ("logo"        := Json.string)
-      ("venue"       := venueDecoder)
-      ("link"        := Json.string)
-      ("status"      := Json.map toStatus Json.string)
+  in 
+    Json.object2
+      (,)
+      ("config" := cfgDecoder)
+      ("events" := eventsDecoder)
+    |> Json.map seasonDecoder
 
 boardDecoder =
   Json.at ["board"]

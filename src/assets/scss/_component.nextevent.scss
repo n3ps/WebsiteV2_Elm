@@ -20,6 +20,47 @@
    text-align: center;
   }
   
+  &.summer, 
+  &.winter {
+    article {
+      @extend %h-center;
+      background-position: 50%;
+      background-repeat: no-repeat;
+      background-size: cover;
+      min-height: 160px;
+    }
+    .text {
+      padding: 20px;
+      transform: rotate(-5deg);
+      color:white;
+      font-size: 6vw;
+      text-shadow: 4px 4px 2px rgba(150, 150, 150, 1);
+    }
+    .message {
+      font-family: impact;
+      font-size: 2.2em;
+      text-align: center;
+      text-shadow: 5px 5px 0 rgb(255,210,23) , 10px 10px 0 rgb(90,199,255) , 15px 14px 0 rgb(255,210,23) , 20px 20px 0 rgb(90,199,255) ;
+    }
+    .back-in {
+      font-family: cursive;
+    }
+    .signature {
+      font-family: monospace;
+      text-align: right;
+      color: #263c61;
+      text-shadow: 2px 2px 0px rgba(255,255,255,0.9);
+      margin-top: 20px;
+    }
+  }
+
+  &.summer article {
+    background-image: url(http://images.winnipegdotnet.org.s3.amazonaws.com/events/summer.jpeg);
+  }
+  &.winter article {
+    background-image: url(http://images.winnipegdotnet.org.s3.amazonaws.com/events/winter.jpeg);
+  }
+
   &.-empty {
     
     > article {
@@ -90,6 +131,14 @@
         top: 34%;
         padding-left: 7%;
         max-width: 24%;
+      }
+    }
+    
+    &.summer,
+    &.winter {
+      .text {
+        font-size: 32px;
+        padding: 40px;
       }
     }
   } 
