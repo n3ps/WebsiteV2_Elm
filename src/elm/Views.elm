@@ -135,7 +135,7 @@ listRegistration resource =
       , article [class "twitter-stream"]
           [ header [] 
               [ span' "tweets" "Tweets "
-              , span' "by" "by" 
+              , span' "by" "by " 
               , a [href ""] [text "@wpgnetug"]
               ]
           , article [class "tweet-list"] tweetStream

@@ -1,5 +1,5 @@
 body { 
-  font-size: 14px;
+  font-size: 13px;
   color: $text-gray;
 }
 
@@ -58,7 +58,7 @@ body {
 
 .featured-videos {  
   .descr {
-    @include font(12px, 1.5, 1em);
+    line-height: 1.5;
   }
 }
 
