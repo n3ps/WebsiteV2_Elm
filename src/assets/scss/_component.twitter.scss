@@ -9,6 +9,11 @@
     text-transform: uppercase;
     border-bottom: 1px solid $light-gray;
   }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 .tweet {
