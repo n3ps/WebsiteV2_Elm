@@ -109,18 +109,17 @@ featuredVideos videos =
 listRegistration resource =
   let
     mkTweet t =
-      a [href <| "https://twitter.com/statuses/" ++ "foo"] 
-        [div [class "tweet"]
-          [ div [class "user-image"] [img [src t.user.image] []]
-          , div [class "content"]
-              [ div [class "user"] 
-                  [ span [class "handle"] [text t.user.handle]
-                  , span [class "name"] [text t.user.name]
-                  ]
-              , div [class "content"] [text t.text]
-              ]
-          ]
+      div [class "tweet"]
+        [ div [class "user-image"] [img [src t.user.image] []]
+        , div [class "content"]
+            [ div [class "user"] 
+                [ span [class "handle"] [text t.user.handle]
+                , span [class "name"] [text t.user.name]
+                ]
+            , div [class "content"] [text t.text]
+            ]
         ]
+        
     tweetStream = 
       case resource of
         Loading -> [loading]
