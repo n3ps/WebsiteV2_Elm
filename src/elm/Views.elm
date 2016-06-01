@@ -23,6 +23,7 @@ icon c fa = div [class c] [iconFor fa]
 image c url = div [class c] [img [src url] []]
 divT = simple div
 divL = simple' div
+span' c t = simple span c t
 
 toggleIf val addition css = css ++ (if val then " " ++ addition else "")
 loading = divL "loading" [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]
@@ -35,7 +36,7 @@ view model =
     , nextEvent model.next 
     , pastEvents model.pastEvents
     , featuredVideos model.videos
-    , listRegistration
+    , listRegistration model.tweets
     , sponsorsView model.sponsors
     , contactView model.board
     , footer [class "main-footer"] 
@@ -105,21 +106,41 @@ featuredVideos videos =
     , article [] (featured |> List.map mkFeature)
     ]
 
-listRegistration =
-  div [class "list-n-twitter"]
-    [ article [class "subscribe"]
-        [ anchor "subscribe"
-        , header [] [text "Want to make sure you don't miss a meeting?"]
-        , divT "signup"   "Then take a minute and sign up for the Winnipeg .NET user group mailing list!"
-        , divT "schedule" "You can be on top of our event schedule, and all you need to do is check you email. Sign up now and don't miss another meeting." 
-        , footer [] [aBlank [class "button -outline -large", href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
+listRegistration resource =
+  let
+    mkTweet t =
+      div [class "tweet"]
+        [ div [class "user-image"] [img [src t.user.image] []]
+        , div [class "content"]
+            [ div [class "user"] 
+                [ span [class "handle"] [text t.user.handle]
+                , span [class "name"] [text t.user.name]
+                ]
+            , div [class "content"] [text t.text]
+            ]
         ]
-    , article [class "twitter-stream"]
-        [aBlank [class "twitter-timeline", href "https://twitter.com/wpgnetug", 
-          attribute "data-widget-id" "709094677924818945", attribute "data-tweet-limit" "3"]
-          [text "twitter stream. NEED a stream!"]
-        ]
-    ]
+    tweetStream = 
+      case resource of
+        Loading -> [loading]
+        Loaded tweets -> tweets |> List.map mkTweet
+  in
+    div [class "list-n-twitter"]
+      [ article [class "subscribe"]
+          [ anchor "subscribe"
+          , header [] [text "Want to make sure you don't miss a meeting?"]
+          , divT "signup"   "Then take a minute and sign up for the Winnipeg .NET user group mailing list!"
+          , divT "schedule" "You can be on top of our event schedule, and all you need to do is check you email. Sign up now and don't miss another meeting." 
+          , footer [] [aBlank [class "button -outline -large", href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
+          ]
+      , article [class "twitter-stream"]
+          [ header [] 
+              [ span' "tweets" "Tweets "
+              , span' "by" "by" 
+              , a [href ""] [text "@wpgnetug"]
+              ]
+          , article [class "tweet-list"] tweetStream
+          ]  
+      ]
 
 pastEvents events =
   let

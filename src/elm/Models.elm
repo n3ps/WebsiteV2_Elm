@@ -4,6 +4,7 @@ import Date exposing (Date)
 import Random 
 import Json.Decode as Json exposing ((:=))
 import Json.Decode.Extra as JsonX
+import Dict
 
 type Resource val = Loading | Loaded val
 
@@ -35,11 +36,12 @@ emptyModel =
   , version = "0.0.0-no-hash-here"
   }
 
-type alias TweeterUser ={ id: String, name: String, url: String, image: String }
+type alias TweeterUser ={ id: String, handle: String, name: String, url: String, image: String }
 
 type alias Tweet =
-  { user: TweeterUser
-  , text: String
+  { text  : String
+  , date  : Date
+  , user  : TweeterUser
   }
 
 type alias Video = 
@@ -80,7 +82,9 @@ type alias Sponsor =
   }
 
 type alias SlackResponse = 
-  {ok: Bool, error: Maybe String}
+  { ok: Bool
+  , error: Maybe String
+  }
 
 -- Decoders
 --
@@ -180,17 +184,19 @@ videoDecoder =
 tweetDecoder =
   let
     userDecoder =
-      Json.object4
+      Json.object5
         TweeterUser
-        ("id"  := Json.string)
-        ("url" := Json.string)
+        ("id"   := Json.string)
         ("screen_name" := Json.string)
+        ("name" := Json.string)
+        ("url"  := Json.string)
         ("profile_image_url" := Json.string)
 
   in
     Json.at ["tweets"]
     <| Json.list
-    <| Json.object2
+    <| Json.object3
         Tweet
-        ("user" := userDecoder)
         ("text" := Json.string)
+        ("created_at" := JsonX.date)
+        ("user" := userDecoder)
