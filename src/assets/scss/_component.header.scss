@@ -120,11 +120,19 @@
 }
 
 .slack-form {
-  margin-bottom: 10px;
   
+  .fa-slack {
+    margin-right: 4px;
+    color: #5D3A58;
+    font-size: 2.5em;
+    vertical-align: middle;
+  }
+    
   .form-group {
+    display: none;
     position: relative;
     height: 30px;
+    margin-bottom: 10px;
     overflow: hidden;
     white-space: nowrap;
     font-size: 12px;
@@ -176,13 +184,6 @@
       transform: translateY(100%);
     }
     
-    .fa-slack {
-      margin-right: 4px;
-      color: #5D3A58;
-      font-size: 2.5em;
-      vertical-align: middle;
-    }
-    
     .input-group-addon {
       display: none;
     }
@@ -210,6 +211,10 @@
     padding-right: 30px;
     margin-bottom: 0;
     order: 0;
+    
+    > .sm-link {
+      display: none;
+    }
     
     .form-group {
       height: auto;
