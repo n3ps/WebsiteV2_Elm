@@ -308,7 +308,9 @@ onEnter fail success =
 
 slackForm model =
   div [class "slack-form"]
-    [ div
+    [ a [class "sm-link", href "http://slack.winnipegdotnet.org", target "_blank"] 
+      [ iconFor "slack", text "slack" ]
+      , div
         [ class "form-group"]
         [ iconFor "slack"
         , input 
