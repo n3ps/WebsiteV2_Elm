@@ -30,10 +30,16 @@ img {
 
 .loading {
   @extend %h-center;
+  flex-flow: column wrap;
   
   .next-event &,
   .past-events & {
     min-height: 200px;
+  }
+  
+  &:after {
+    padding: 10px 0;
+    content: "Loading...";
   }
 }
 
