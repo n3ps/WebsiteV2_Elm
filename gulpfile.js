@@ -124,9 +124,9 @@ gulp.task("images:dev", function () {
 
 // Copy index.html and CNAME files to the "serve" directory
 gulp.task("copy:dev", function () {
-  return gulp.src(["src/index.html", "src/CNAME"])
+  return gulp.src(["src/index.html", "src/CNAME", "src/assets/images/favicon.ico"])
     .pipe(gulp.dest("serve"))
-    .pipe($.size({ title: "index.html & CNAME" }))
+    .pipe($.size({ title: "index.html & CNAME & favicon" }))
 });
 
 gulp.task("cname", function () {
