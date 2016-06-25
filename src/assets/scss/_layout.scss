@@ -68,6 +68,10 @@ a[id]::before {
   z-index: 1;
   position: relative;
   background-color: white;
+
+  > article {
+    justify-content: center;
+  }
 }
 
 .main-footer {
@@ -120,7 +124,7 @@ a[id]::before {
     > article {
       padding: 15px 0;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: center;
       background: white;
     }
   }
