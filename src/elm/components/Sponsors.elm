@@ -2,7 +2,6 @@ module Components.Sponsors exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (..)
 import Components.HtmlHelpers exposing (aBlank, anchor)
 
 -- Model
@@ -18,17 +17,10 @@ emptyModel = []
 
 -- Update
 type Msg
-  = LoadSponsors Model
-  | NoOp
+  = Load Model
 
-update msg model =
-  case msg of
-    LoadSponsors loaded  -> { model | sponsors = loaded } ! []
-    _ -> model ! []
-
--- Api call
-
---load = Api.getResource "sponsors" sponsorDecoder LoadSponsors
+update (Load list) model =
+  { model | sponsors = list } ! []
 
 -- View
 view sponsors =

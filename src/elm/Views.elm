@@ -3,6 +3,7 @@ module Views exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Html.App as App
 import Date
 import Array
 import Date.Format exposing (format)
@@ -15,18 +16,24 @@ import Models exposing (..)
 
 import Components.HtmlHelpers as Helpers exposing (..)
 import Components.Sponsors as Sponsors
+import Components.Videos as Videos
+import Components.Board as Board
+import Components.Header as Social
+import Components.Events as Events
+import Components.Tweets as Tweets
+import Resource exposing (Resource)
 
 view : Model -> Html Msg
 view model = 
-  let ctnrClass = "container" |> toggleIf model.openMenu "drawer-open"
+  let ctnrClass = "container" |> toggleIf model.social.openMenu "drawer-open"
   in div [class ctnrClass]
-    [ header [] [navSocial model, logoMenu]
-    , nextEvent model.next 
-    , pastEvents model.pastEvents
-    , featuredVideos model.videos
-    , listRegistration model.tweets
+    [ App.map SocialMsg (Social.view model.social)
+    , Events.renderNext model.events 
+    , Events.renderPast model.events
+    , Videos.view model.videos
+    , Tweets.view model.tweets
     , Sponsors.view model.sponsors
-    , contactView model.board
+    , Board.view model.board
     , footer [class "main-footer"] 
         [ divL "menu" menuOptions
         , divT "copyright" "© Winnipeg Dot Net User Group 2015"
@@ -37,200 +44,7 @@ view model =
 
 img_asset s = "/assets/images/" ++ s
 
-contactView members =
-  let
-    mailTo = (++) "mailto:winnipegdotnet@gmail.com?subject=ATTN: "
-    mkContact mbr = div [class "member", title mbr.name]
-      [ div [class "avatar"] [img [src mbr.image] []]
-      , divT "name" mbr.name
-      , divT "role" mbr.role
-      , divL "contact" [a [class "button -outline -small", href <| mailTo mbr.contact] [text mbr.contact]]
-      ] 
-    contactMap = case members of
-      [] -> [text "No contact information available at the moment"]
-      xs -> xs |> List.map mkContact
 
-  in section [class "contact-us section"] 
-      [ anchor "contact-us"
-      , header  [] [text "Contact Us"]
-      , article [] 
-          [ divT "message" "Looking to reach out directly to the Winnipeg .NET User Group board? Click on the board member to ask your query."
-          , divL "members" contactMap
-          ]
-      ]
-
-
-featuredVideos videos =
-  let
-    featured = videos |> List.take 3
-
-    mkFeature v = div [class "video"]
-      [ header [] [aBlank [href v.link] [img [src v.thumbnail] []]]
-      -- , div [class "title"] [text v.title]
-      , div [class "descr"] [text v.description]
-      ]
-
-  in section [class "featured-videos section"]
-    [ anchor "watch-us"
-    , header [] 
-        [span [class "title"] [text "Winnipeg .NET User Group"],
-         aBlank [href youTube]
-          [iconFor "youtube-play", span [] [text "Subscribe"]]]
-    , article [] (featured |> List.map mkFeature)
-    ]
-
-listRegistration resource =
-  let
-    mkTweet t =
-      div [class "tweet"]
-        [ div [class "user-image"] [img [src t.user.image] []]
-        , div [class "content"]
-            [ div [class "user"] 
-                [ span [class "handle"] [text t.user.handle]
-                , span [class "name"] [text t.user.name]
-                ]
-            , div [class "content"] [text t.text]
-            ]
-        ]
-        
-    tweetStream = 
-      case resource of
-        Loading -> [loading]
-        Loaded tweets -> tweets |> List.take 5 |> List.map mkTweet
-  in
-    div [class "list-n-twitter"]
-      [ article [class "subscribe"]
-          [ anchor "subscribe"
-          , header [] [text "Want to make sure you don't miss a meeting?"]
-          , divT "signup"   "Then take a minute and sign up for the Winnipeg .NET user group mailing list!"
-          , divT "schedule" "You can be on top of our event schedule, and all you need to do is check you email. Sign up now and don't miss another meeting." 
-          , footer [] [aBlank [class "button -outline -large", href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
-          ]
-      , article [class "twitter-stream"]
-          [ header [] 
-              [ span' "tweets" "Tweets "
-              , span' "by" "by " 
-              , a [href "https://twitter.com/wpgnetug"] [text "@wpgnetug"]
-              ]
-          , article [class "tweet-list"] tweetStream
-          ]  
-      ]
-
-pastEvents events =
-  let
-    mkWidget e = 
-      div [class "past-event"]
-        [ image "image" e.logo
-        , div [class "info"]
-            [ divT "title" e.title
-            , divT "date"  (e.date |> format "%b %e, %Y")
-            , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
-            ]
-        ]
-
-    ofEmpty l = if List.isEmpty l then Nothing else Just l
-
-    eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
-    mkArticle content =
-      [ article [] content
-      , footer [] [aBlank [class "button -large", href eventBrite] [text "View All"]]
-      ]
-
-    content =
-      events 
-      |> List.take 4 
-      |> List.map mkWidget
-      |> ofEmpty
-      |> Maybe.map mkArticle
-      |> Maybe.withDefault [loading]
-
-  in
-    section [class "past-events section"]
-      ([ anchor "past-events"
-      , header  [] [text "Past Events"] 
-      ] ++ content)
-
-
-nextEvent resource =
-  let 
-    mkParagraphs txt = txt |> String.split "\n" |> List.map (single p)
-    showEvent e =
-      section [class "next-event section"]
-        [ anchor "next-event"
-        , simple header "header" "Next Event"
-        , article []
-            [ image "event-img" e.logo
-            , div [class "event-info"]
-                [ simple div "title" e.title
-                , mkParagraphs e.description |> simple' div "description"
-                ]
-            , div [class "presenter"] []
-            , div [class "details"]
-                [ div [class "date"]
-                  [ icon "icon" "calendar"
-                  , text <| format "%A, %B %e, %Y" e.date
-                  ]
-                , div [class "venue"]
-                  [ icon "icon" "map-marker"
-                  , divT "name"    e.venue.name
-                  , divT "address" e.venue.address
-                  ]
-                ]
-            , footer [] [aBlank [class "button -large", href e.link] [text "Count me in!"]]
-            ]
-        ]
-
-    workingOnIt =
-      section [class "next-event section -empty"]
-        [ anchor "next-event"
-        , header  [] [text "Next Event"]
-        , article [] 
-            [ img [src "/assets/images/placeholder.png"] []
-            , span [class "placeholder"] [
-              text "We are working on it"]
-            ]
-        ]
-        
-    loadingEvents =
-      section [class "next-event section"]
-        [ anchor "next-event"
-        , simple header "header" "Next Event"
-        , loading
-        ]
-
-    summer =
-      section [class "next-event section summer"]
-        [ anchor "next-event"
-        , header  [] [text "Next Event"]
-        , article []
-            [ div [class "text"] 
-                [ div [class "back-in"] [text "We will be back in Sep"]
-                , div [class "message"] [text "Happy Summer!"]
-                , div [class "signature"] [text "C#, F# & VB.NET"]
-                ]
-            ]
-        ]
-
-    winter = 
-      section [class "next-event section winter"]
-        [ anchor "next-event"
-        , header  [] [text "Next Event"]
-        , article []
-            [ div [class "text"] 
-                [ div [class "back-in"] [text "We will be back in Jan"]
-                , div [class "message"] [text "Happy Holidays!"]
-                , div [class "signature"] [text "C#, F# & VB.NET"]
-                ]
-            ]
-        ]
-
-  in 
-    case resource of
-      Loading -> loadingEvents
-      Loaded Summer -> summer
-      Loaded Winter -> winter
-      Loaded InBetween     -> workingOnIt
-      Loaded (Ready event) -> showEvent event
 
 menuOptions =
   [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
@@ -238,93 +52,3 @@ menuOptions =
   , a [title "Contact us", href "#contact-us"] [text "Contact"]
   ]
 
-logoMenu =
-  div [class "logo-menu"]
-    [ img [src "/assets/images/logo.png"] []
-    , section [class "motto"]
-        [ header [] [text "Winnipeg Dot Net User Group"]
-        , divT "description" "A user group full of lambdas, folds, MVC, ponnies and rainbows!"
-        ]
-    , div [class "main-menu"] menuOptions
-    , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]
-    ]
-
-
-navSocial model = 
-  let 
-    classes = "nav-social" |> toggleIf model.showSlack "slack-signup"
-  in 
-    divL classes [navMenu, slackForm model, socialIcons, navClose]
-
-  
-navMenu =
-  let
-    toLi (lnk, t) = li [] [a [href <| "#" ++ lnk, onClick ToggleMenu] [text t]]
-    items = [
-       ("next-event", "Next Event")
-      ,("past-events", "Past Events")
-      ,("subscribe", "Subscribe")
-      ,("sponsors", "Sponsors")
-      ,("contact-us", "Contact Us")
-      ]
-  in ul [class "nav-menu"] (items |> List.map toLi)
-
-navClose =
-  a [class "button-close", href "javascript:void(0)", onClick ToggleMenu] [iconFor "close"]
-
-onEnter : msg -> msg -> Attribute msg
-onEnter fail success =
-  let
-    tagger code = if code == 13 then success else fail
-  in
-    on "keyup" (Json.map tagger keyCode)
-
-slackForm model =
-  div [class "slack-form"]
-    [ a [class "sm-link", href "http://slack.winnipegdotnet.org", target "_blank"] 
-      [ iconFor "slack", text "slack" ]
-      , div
-        [ class "form-group"]
-        [ iconFor "slack"
-        , input 
-            [type' "email"
-            , id "email"
-            , class "form-control"
-            , value model.slackEmail
-            , placeholder "you@domain.com"
-            , onInput UpdateEmail
-            , onEnter NoOp PostToSlack
-            ] []
-        , label [for "email", onClick ToggleSlack] [text "slack"]
-        ]
-    ]
-
-youTube  = "https://www.youtube.com/channel/UC6OzdI6-htXE_97zamJRaaA"
-
-socialIcons =
-  let 
-    twitter  = "https://twitter.com/wpgnetug" 
-    facebook = "https://www.facebook.com/winnipegdotnet"
-    gitHub   = "https://github.com/WpgDotNetUG/WebsiteV2_Elm"
-    icon id =
-      span
-        [class "fa-stack fa-2x"]
-        [ i [class "fa fa-circle fa-stack-2x"] []
-        , i [class <| "fa fa-stack-1x fa-" ++ id] []
-        ]
-      
-    linkTo link i t hint = 
-      a 
-        [title hint
-        , class "sm-link"
-        , href link
-        , onClick ToggleMenu
-        , target "_blank"] 
-        [icon i, text t]
-  in 
-  div [class "social-icons"]
-    [ linkTo twitter  "twitter"  "Follow" "Follow us on Twitter."
-    , linkTo facebook "facebook" "Like" "Like us on Facebook"
-    , linkTo youTube  "youtube-play" "Subscribe" "Subscribe to our YouTube channel to get notifications"
-    , linkTo gitHub   "github"   "Fork" "Fork us on GitHub and collaborate"
-    ]

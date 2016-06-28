@@ -1,25 +1,23 @@
 module Messages exposing (..)
 
-import Models exposing (BoardMember, Event, Video, SlackResponse, Season, Tweet)
 import Http
 
 import Components.Sponsors as Sponsors
+import Components.Videos as Videos
+import Components.Board as Board
+import Components.Events as Events
+import Components.Header as Social
+import Components.Tweets as Tweets
 
-type alias Email = String
 
 type Msg
   = SponsorsMsg Sponsors.Msg
-  | LoadBoard    (List BoardMember)
-  | LoadEvents   (Season, List Event)
-  | LoadVideos   (List Video)
-  | LoadTweets   (List Tweet)
-  | ToggleMenu
-  | ToggleSlack
-  | PostToSlack
-  | SlackSuccess SlackResponse
-  | UpdateEmail  Email
-  | ApiFail      Http.Error
-  | SetVersion   String
+  | VideosMsg   Videos.Msg
+  | BoardMsg    Board.Msg
+  | SocialMsg   Social.Msg
+  | EventsMsg   Events.Msg
+  | TweetsMsg   Tweets.Msg
+  | ApiFail     Http.Error
   | NoOp
 
 
