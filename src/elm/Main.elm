@@ -12,6 +12,8 @@ import Views exposing (..)
 import Models exposing (..)
 import Messages exposing (..)
 
+import Components.Sponsors as Sponsors
+
 main = 
   Html.programWithFlags
     { init = init, view = view, update = update, subscriptions = (\_ -> Sub.none) }
@@ -40,7 +42,7 @@ notifyUser kind msg =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model = 
   case msg of
-    LoadSponsors loaded  -> { model | sponsors = loaded } ! []
+    SponsorsMsg aMsg -> Sponsors.update aMsg model
     LoadBoard    members -> { model | board    = members} ! []
     LoadVideos   videos  -> { model | videos   = videos}  ! []
     LoadEvents   (s, p)  -> { model | pastEvents = p, next = Loaded s } ! []
@@ -89,15 +91,15 @@ postToSlack email =
   |> fromJson slackDecoder
   |> Task.perform ApiFail SlackSuccess
 
-getResource resource decoder success =
+getResource resource decoder msg =
   resource
   |> urlFor
   |> Http.get decoder
-  |> Task.perform ApiFail success
+  |> Task.perform ApiFail msg
 
 getEvents   = getResource "events"   eventsDecoder  LoadEvents
 getBoard    = getResource "board"    boardDecoder   LoadBoard
-getSponsors = getResource "sponsors" sponsorDecoder LoadSponsors
+getSponsors = getResource "sponsors" sponsorDecoder Sponsors.LoadSponsors
 getVideos   = getResource "videos"   videoDecoder   LoadVideos
 getTweets   = getResource "tweets"   tweetDecoder   LoadTweets
 

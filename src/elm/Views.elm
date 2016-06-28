@@ -13,20 +13,8 @@ import Json.Decode as Json
 import Messages exposing (..)
 import Models exposing (..)
 
-iconFor icn = i [class <| "fa fa-" ++ icn] []
-aBlank xs = a <| target "_blank"::xs
-anchor s = a [id s] []
-single tag t = tag [] [text t]
-simple tag c t = tag [class c] [text t]
-simple' tag c = tag [class c]
-icon c fa = div [class c] [iconFor fa]
-image c url = div [class c] [img [src url] []]
-divT = simple div
-divL = simple' div
-span' c t = simple span c t
-
-toggleIf val addition css = css ++ (if val then " " ++ addition else "")
-loading = divL "loading" [ i [class "fa fa-spin fa-spinner fa-5x"] [] ]
+import Components.HtmlHelpers as Helpers exposing (..)
+import Components.Sponsors as Sponsors
 
 view : Model -> Html Msg
 view model = 
@@ -37,7 +25,7 @@ view model =
     , pastEvents model.pastEvents
     , featuredVideos model.videos
     , listRegistration model.tweets
-    , sponsorsView model.sponsors
+    , Sponsors.view model.sponsors
     , contactView model.board
     , footer [class "main-footer"] 
         [ divL "menu" menuOptions
@@ -69,21 +57,6 @@ contactView members =
           [ divT "message" "Looking to reach out directly to the Winnipeg .NET User Group board? Click on the board member to ask your query."
           , divL "members" contactMap
           ]
-      ]
-
-sponsorsView sponsors  =
-  let
-    sponsorImage sponsor = 
-      div [class "sponsor", title sponsor.name] 
-        [aBlank [href sponsor.url] [img [src sponsor.image] []] ]
-    sponsorMap = case sponsors of
-      [] -> [text "No sponsors information available at the moment"]
-      xs -> xs |> List.map sponsorImage
-
-  in section [class "sponsors section"] 
-      [ anchor "sponsors"
-      , header  [] [text "Sponsors"]
-      , article [] sponsorMap
       ]
 
 

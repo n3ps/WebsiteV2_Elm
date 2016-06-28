@@ -1,12 +1,14 @@
 module Messages exposing (..)
 
-import Models exposing (Sponsor, BoardMember, Event, Video, SlackResponse, Season, Tweet)
+import Models exposing (BoardMember, Event, Video, SlackResponse, Season, Tweet)
 import Http
+
+import Components.Sponsors as Sponsors
 
 type alias Email = String
 
 type Msg
-  = LoadSponsors (List Sponsor)
+  = SponsorsMsg Sponsors.Msg
   | LoadBoard    (List BoardMember)
   | LoadEvents   (Season, List Event)
   | LoadVideos   (List Video)

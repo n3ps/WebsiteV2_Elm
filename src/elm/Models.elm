@@ -6,6 +6,8 @@ import Json.Decode as Json exposing ((:=))
 import Json.Decode.Extra as JsonX
 import Dict
 
+import Components.Sponsors as Sponsors
+
 type Resource val = Loading | Loaded val
 
 type Season = Summer | Winter | InBetween | Ready Event
@@ -13,7 +15,7 @@ type Season = Summer | Winter | InBetween | Ready Event
 type alias Model = 
   { next : Resource Season
   , pastEvents : List Event
-  , sponsors   : List Sponsor
+  , sponsors   : Sponsors.Model
   , board      : List BoardMember
   , videos     : List Video
   , tweets     : Resource (List Tweet)
@@ -27,7 +29,7 @@ emptyModel =
   { next = Loading
   , board = []
   , pastEvents = []
-  , sponsors = []
+  , sponsors = Sponsors.emptyModel
   , videos = []
   , tweets = Loading
   , openMenu = False
@@ -74,12 +76,6 @@ type alias Event =
   }
 
 withStatus st e = e.status == st
-
-type alias Sponsor = 
-  { name : String
-  , url : String
-  , image : String
-  }
 
 type alias SlackResponse = 
   { ok: Bool
@@ -164,7 +160,7 @@ sponsorDecoder =
   Json.at ["sponsors"]
   <| Json.list 
   <| Json.object3 
-      Sponsor
+      Sponsors.Sponsor
       ("name"   := Json.string)
       ("url"    := Json.string)
       ("imgUrl" := Json.string)
