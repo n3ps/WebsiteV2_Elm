@@ -7,7 +7,7 @@ import Dict
 import Components.Sponsors as Sponsors
 import Components.Board as Board
 import Components.Videos as Videos
-import Components.Header as Social
+import Header.Models as Social
 import Components.Events as Events
 import Components.Tweets as Tweets
 import Resource exposing (..)

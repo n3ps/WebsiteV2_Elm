@@ -6,7 +6,7 @@ import Components.Sponsors as Sponsors
 import Components.Videos as Videos
 import Components.Board as Board
 import Components.Events as Events
-import Components.Header as Social
+import Header.Messages as Social
 import Components.Tweets as Tweets
 
 

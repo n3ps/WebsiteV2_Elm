@@ -17,7 +17,7 @@ import Notify exposing (..)
 import Components.Sponsors as Sponsors
 import Components.Videos as Videos
 import Components.Board as Board
-import Components.Header as Social
+import Header.Update as Social
 import Components.Events as Events
 import Components.Tweets as Tweets
 import Resource exposing (Resource)
@@ -43,13 +43,12 @@ update msg model =
     updateTweets tw = { model | tweets = tw }
   in
     case msg of
-      SocialMsg  Social.PostToSlack -> model ! [Api.postToSlack model.social.slackEmail]
       SponsorsMsg msg' -> Sponsors.update msg' model
       VideosMsg   msg' -> Videos.update   msg' model
       BoardMsg    msg' -> Board.update    msg' model
-      EventsMsg   msg' -> Events.update msg' model.events |> mapFst updateEvents
-      SocialMsg   msg' -> Social.update msg' model.social |> mapFst updateSocial
-      TweetsMsg   msg' -> Tweets.update msg' model.tweets |> mapFst updateTweets
+      EventsMsg   msg' -> Events.update   msg' model.events |> mapFst updateEvents
+      SocialMsg   msg' -> Social.update   msg' model.social |> mapFst updateSocial
+      TweetsMsg   msg' -> Tweets.update   msg' model.tweets |> mapFst updateTweets
       ApiFail error    -> model ! [notifyUser Error <| errorMsg error]
       _ -> model ! []
 

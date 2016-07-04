@@ -10,7 +10,7 @@ import Messages exposing (..)
 import Components.Videos as Videos
 import Components.Sponsors as Sponsors
 import Components.Board as Board
-import Components.Header as Social
+import Header.Models as Social
 import Components.Tweets as Tweets
 import Components.Events as Events exposing (withStatus, Status, Venue)
 import Resource exposing (Resource)
@@ -24,8 +24,8 @@ urlFor =
 
 resources = [getEvents, getBoard, getVideos, getTweets, getSponsors]
 
-postToSlack : Social.Email -> Cmd Msg
-postToSlack email =
+--postToSlack : Social.Email -> success -> Cmd Msg
+postToSlack email success =
   { verb = "POST"
   , headers = [("Content-type", "application/x-www-form-urlencoded")]
   , url = urlFor "slack"
@@ -33,7 +33,7 @@ postToSlack email =
   }
   |> Http.send Http.defaultSettings
   |> fromJson slackDecoder
-  |> Task.perform ApiFail (Social.SlackSuccess >> SocialMsg)
+  |> Task.perform ApiFail (success >> SocialMsg)
 
 getResource resource decoder msg =
   resource

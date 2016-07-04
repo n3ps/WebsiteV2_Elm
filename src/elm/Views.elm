@@ -18,7 +18,7 @@ import Components.HtmlHelpers as Helpers exposing (..)
 import Components.Sponsors as Sponsors
 import Components.Videos as Videos
 import Components.Board as Board
-import Components.Header as Social
+import Header.Views as Social
 import Components.Events as Events
 import Components.Tweets as Tweets
 import Resource exposing (Resource)

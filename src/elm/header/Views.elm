@@ -1,61 +1,14 @@
-module Components.Header exposing (..)
+module Header.Views exposing (view)
 
-import Http exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Json.Decode as Json exposing ((:=))
+import Components.HtmlHelpers exposing (..)
+import Json.Decode as Json
 
-import Components.HtmlHelpers exposing (divT, divL, iconFor, toggleIf, aBlank)
-import Components.Videos as Videos exposing (youTube)
-import Notify exposing (..)
+import Header.Messages exposing (..)
+import Components.Videos as Videos
 
--- Model
-type alias Model = 
-  { showSlack: Bool
-  , slackEmail: String
-  , openMenu: Bool
-  }
-
-type alias Email = String
-
-type alias SlackResponse = 
-  { ok: Bool
-  , error: Maybe String
-  }
-
-emptyModel =
-  { showSlack = False
-  , slackEmail = ""
-  , openMenu = False
-  }
-
--- Update
-type Msg
-  = ToggleMenu
-  | ToggleSlack
-  | PostToSlack
-  | SlackSuccess SlackResponse
-  | UpdateEmail  Email
-  | NoOp
-
-update msg sm = 
-  case msg of
-    ToggleMenu         -> { sm | openMenu   = not sm.openMenu } ! []
-    ToggleSlack        -> { sm | showSlack  = not sm.showSlack} ! []
-    UpdateEmail  email -> { sm | slackEmail = email} ! []
-    SlackSuccess res   -> { sm | showSlack  = False, slackEmail = "" } ! [notify res]
-    _ -> sm ! []
-
-notify res =
-  if res.ok then notifyUser Success "Registration sent!"
-  else
-    res.error 
-    |> Maybe.withDefault "(no details, sorry)"
-    |> (++) "Something happened with Slack: "
-    |> notifyUser Error  
-
--- View
 view model =
   header [] [navSocial model, logoMenu]
 
@@ -158,3 +111,4 @@ logoMenu =
     , div [class "main-menu"] menuOptions
     , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]
     ]
+
