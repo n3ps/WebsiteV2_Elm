@@ -9,6 +9,10 @@ import Components.Events as Events
 import Header.Messages as Social
 import Components.Tweets as Tweets
 
+type LoadError
+  = Events
+  | Tweets
+  | NotifyUser
 
 type Msg
   = SponsorsMsg Sponsors.Msg
@@ -17,7 +21,7 @@ type Msg
   | SocialMsg   Social.Msg
   | EventsMsg   Events.Msg
   | TweetsMsg   Tweets.Msg
-  | ApiFail     Http.Error
+  | ApiFail     LoadError Http.Error
   | NoOp
 
 

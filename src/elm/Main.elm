@@ -49,7 +49,9 @@ update msg model =
       EventsMsg   msg' -> Events.update   msg' model.events |> mapFst updateEvents
       SocialMsg   msg' -> Social.update   msg' model.social |> mapFst updateSocial
       TweetsMsg   msg' -> Tweets.update   msg' model.tweets |> mapFst updateTweets
-      ApiFail error    -> model ! [notifyUser Error <| errorMsg error]
+      ApiFail Events e -> update (EventsMsg Events.Error) model
+      ApiFail Tweets e -> update (TweetsMsg Tweets.Error) model
+      ApiFail NotifyUser error -> model ! [notifyUser Error <| errorMsg error]
       _ -> model ! []
 
 

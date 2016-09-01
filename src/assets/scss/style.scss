@@ -33,3 +33,14 @@ $max-width: 1200px;
 @import "component.sponsor";
 @import "component.contact";
 @import "component.twitter";
+
+.error {
+  text-align: center;
+  margin: auto;
+}
+
+.error .frown {
+  font-size: 200%;
+}
+
+

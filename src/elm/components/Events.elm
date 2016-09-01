@@ -12,8 +12,8 @@ import Resource exposing (..)
 type Season = Summer | Winter | InBetween | Ready Event
 
 type alias Model =
-  { next : Resource Season
-  , pastEvents : List Event
+  { next : Maybe (Resource Season)
+  , pastEvents : Maybe (List Event)
   }
 
 type alias Venue = 
@@ -39,16 +39,20 @@ type alias Event =
 withStatus st e = e.status == st
 
 emptyModel =
-  { next = Loading
-  , pastEvents = []
+  { next = Just Loading
+  , pastEvents = Just [] 
   }
 
 -- Update
 type Msg
   = Load (Season, List Event)
+  | Error
 
-update (Load (season, past)) model = 
-  { model | pastEvents = past, next = Resource.Loaded season } ! []
+update msg model =
+  case msg of
+    Load (season, past) -> { model | pastEvents = Just past, next = Just (Resource.Loaded season) } ! []
+
+    Error -> { model | pastEvents = Nothing, next = Nothing } ! []
 
 -- View
 renderPast model = 
@@ -62,6 +66,12 @@ renderPast model =
             , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
             ]
         ]
+    
+    errorLoading = 
+      [ div [class "error"]
+          [ div [class "frown"] [text ";("]
+          , div [] [text "Could not load past events"]
+          ]]
 
     ofEmpty l = if List.isEmpty l then Nothing else Just l
 
@@ -72,12 +82,15 @@ renderPast model =
       ]
 
     content =
-      model.pastEvents 
-      |> List.take 4 
-      |> List.map mkWidget
-      |> ofEmpty
-      |> Maybe.map mkArticle
-      |> Maybe.withDefault [loading]
+      case model.pastEvents of
+        Nothing -> errorLoading
+        Just pastEvents ->
+          pastEvents 
+          |> List.take 4 
+          |> List.map mkWidget
+          |> ofEmpty
+          |> Maybe.map mkArticle
+          |> Maybe.withDefault [loading]
 
   in
     section [class "past-events section"]
@@ -110,6 +123,17 @@ renderNext model =
                   ]
                 ]
             , footer [] [aBlank [class "button -large", href e.link] [text "Count me in!"]]
+            ]
+        ]
+    errorLoading =
+      section [class "next-event section"]
+        [ anchor "next-event"
+        , simple header "header" "Next Event"
+        , article []
+            [ div [class "error"]
+              [ div [class "frown"] [text ";("]
+              , div [] [text "Could not load next event"]
+              ]
             ]
         ]
 
@@ -159,10 +183,11 @@ renderNext model =
 
   in 
     case model.next of
-      Loading -> loadingEvents
-      Loaded Summer -> summer
-      Loaded Winter -> winter
-      Loaded InBetween     -> workingOnIt
-      Loaded (Ready event) -> showEvent event
+      Nothing -> errorLoading
+      Just Loading -> loadingEvents
+      Just (Loaded Summer) -> summer
+      Just (Loaded Winter) -> winter
+      Just (Loaded InBetween)     -> workingOnIt
+      Just (Loaded (Ready event)) -> showEvent event
 
 

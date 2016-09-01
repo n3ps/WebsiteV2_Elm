@@ -3,6 +3,7 @@ module Header.Update exposing (update)
 import Header.Messages exposing (..)
 import Notify exposing (notifyUser)
 import Api
+import Messages
 
 update msg sm = 
   case msg of
@@ -10,7 +11,7 @@ update msg sm =
     ToggleSlack        -> { sm | showSlack  = not sm.showSlack} ! []
     UpdateEmail  email -> { sm | slackEmail = email} ! []
     SlackSuccess res   -> { sm | showSlack  = False, slackEmail = "" } ! [notify res]
-    PostToSlack        -> sm ! [Api.postToSlack sm.slackEmail SlackSuccess]
+    PostToSlack        -> sm ! [Api.postToSlack sm.slackEmail Messages.NotifyUser SlackSuccess]
     _ -> sm ! []
 
 notify res =

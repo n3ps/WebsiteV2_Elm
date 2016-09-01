@@ -7,7 +7,7 @@ import Components.HtmlHelpers exposing (aBlank, anchor, divT, divL, span', loadi
 import Resource exposing (Resource)
 
 -- Model
-type alias Model = Resource (List Tweet)
+type alias Model = Maybe (Resource (List Tweet))
 
 type alias TweeterUser =
   { id: String
@@ -24,13 +24,17 @@ type alias Tweet =
   }
 
 
-emptyModel = []
+emptyModel = Just []
 
 -- Update
 type Msg
   = Load Model
+  | Error
 
-update (Load tw) model = tw ! []
+update msg model = 
+  case msg of
+    Load tw -> tw ! []
+    Error   -> Nothing ! []
 
 -- View
 view resource =
@@ -46,11 +50,19 @@ view resource =
             , div [class "content"] [text t.text]
             ]
         ]
-        
-    tweetStream = 
+    
+    errorLoading =
+      [ div [class "error"] 
+          [ div [class "frown"] [text ";("]
+          , div [] [text "We can't hear any tweets at the moment"]
+          ]
+      ]
+
+    tweetStream =
       case resource of
-        Resource.Loading -> [loading]
-        Resource.Loaded tweets -> tweets |> List.take 5 |> List.map mkTweet
+        Nothing                 -> errorLoading
+        Just (Resource.Loading) -> [loading]
+        Just (Resource.Loaded tweets) -> tweets |> List.take 5 |> List.map mkTweet
   in
     div [class "list-n-twitter"]
       [ article [class "subscribe"]
