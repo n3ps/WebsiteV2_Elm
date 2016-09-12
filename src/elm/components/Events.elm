@@ -69,7 +69,7 @@ renderPast model =
     
     errorLoading = 
       [ div [class "error"]
-          [ div [class "frown"] [text ";("]
+          [ h1 [] [text ";("]
           , div [] [text "Could not load past events"]
           ]]
 
@@ -131,7 +131,7 @@ renderNext model =
         , simple header "header" "Next Event"
         , article []
             [ div [class "error"]
-              [ div [class "frown"] [text ";("]
+              [ h1 [] [text ";("]
               , div [] [text "Could not load next event"]
               ]
             ]

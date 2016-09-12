@@ -53,7 +53,7 @@ view resource =
     
     errorLoading =
       [ div [class "error"] 
-          [ div [class "frown"] [text ";("]
+          [ h1 [] [text ";("]
           , div [] [text "We can't hear any tweets at the moment"]
           ]
       ]
