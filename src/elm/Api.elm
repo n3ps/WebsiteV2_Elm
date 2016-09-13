@@ -25,7 +25,7 @@ urlFor =
 resources = [getEvents, getBoard, getVideos, getTweets, getSponsors]
 
 --postToSlack : Social.Email -> success -> Cmd Msg
-postToSlack email success =
+postToSlack email failMsg success =
   { verb = "POST"
   , headers = [("Content-type", "application/x-www-form-urlencoded")]
   , url = urlFor "slack"
@@ -33,19 +33,19 @@ postToSlack email success =
   }
   |> Http.send Http.defaultSettings
   |> fromJson slackDecoder
-  |> Task.perform ApiFail (success >> SocialMsg)
+  |> Task.perform (ApiFail failMsg) (success >> SocialMsg)
 
-getResource resource decoder msg =
+getResource resource decoder fail msg =
   resource
   |> urlFor
   |> Http.get decoder
-  |> Task.perform ApiFail msg
+  |> Task.perform (ApiFail fail) msg
 
-getEvents   = getResource "events"   eventsDecoder  (Events.Load   >> EventsMsg)
-getBoard    = getResource "board"    boardDecoder   (Board.Load    >> BoardMsg)
-getSponsors = getResource "sponsors" sponsorDecoder (Sponsors.Load >> SponsorsMsg)
-getVideos   = getResource "videos"   videoDecoder   (Videos.Load   >> VideosMsg)
-getTweets   = getResource "tweets"   tweetDecoder   (Resource.Loaded >> Tweets.Load >> TweetsMsg)
+getEvents   = getResource "events"   eventsDecoder  Messages.Events (Events.Load   >> EventsMsg)
+getBoard    = getResource "board"    boardDecoder   Messages.NotifyUser (Board.Load    >> BoardMsg)
+getSponsors = getResource "sponsors" sponsorDecoder Messages.NotifyUser (Sponsors.Load >> SponsorsMsg)
+getVideos   = getResource "videos"   videoDecoder   Messages.NotifyUser (Videos.Load   >> VideosMsg)
+getTweets   = getResource "tweets"   tweetDecoder   Messages.Tweets (Resource.Loaded >> Just >> Tweets.Load >> TweetsMsg)
 
 
 ----------------

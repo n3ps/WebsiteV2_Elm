@@ -29,7 +29,7 @@ emptyModel =
   , social = Social.emptyModel
   , events = Events.emptyModel
   , sponsors = Sponsors.emptyModel
-  , tweets = Loading
+  , tweets = Just Loading
   , version = "0.0.0-no-hash-here"
   }
 
