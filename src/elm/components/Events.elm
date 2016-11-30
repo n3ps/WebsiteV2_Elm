@@ -114,7 +114,7 @@ renderNext model =
             , div [class "details"]
                 [ div [class "date"]
                   [ icon "icon" "calendar"
-                  , text <| format "%A, %B %e, %Y" e.date
+                  , text <| format "%A, %B %e, %Y at %I:%M %p" e.date
                   ]
                 , div [class "venue"]
                   [ icon "icon" "map-marker"
