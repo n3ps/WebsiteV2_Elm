@@ -29,6 +29,7 @@ view model =
   in div [class ctnrClass]
     [ App.map SocialMsg (Social.view model.social)
     , Events.renderNext model.events 
+    , Events.renderUpcoming model.events
     , Events.renderPast model.events
     , Videos.view model.videos
     , Tweets.view model.tweets

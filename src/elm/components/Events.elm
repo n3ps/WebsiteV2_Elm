@@ -13,6 +13,7 @@ type Season = Summer | Winter | InBetween | Ready Event
 
 type alias Model =
   { next : Maybe (Resource Season)
+  , upcomingEvents : List Event
   , pastEvents : Maybe (List Event)
   }
 
@@ -40,21 +41,55 @@ withStatus st e = e.status == st
 
 emptyModel =
   { next = Just Loading
+  , upcomingEvents = []
   , pastEvents = Just [] 
   }
 
+ofEmpty l = if List.isEmpty l then Nothing else Just l
+
 -- Update
 type Msg
-  = Load (Season, List Event)
+  = Load (Season, List Event, List Event)
   | Error
 
 update msg model =
   case msg of
-    Load (season, past) -> { model | pastEvents = Just past, next = Just (Resource.Loaded season) } ! []
+    Load (season, upcoming, past) -> { model | pastEvents = Just past, upcomingEvents = upcoming, next = Just (Resource.Loaded season) } ! []
 
-    Error -> { model | pastEvents = Nothing, next = Nothing } ! []
+    Error -> { model | pastEvents = Nothing, next = Nothing, upcomingEvents = [] } ! []
 
 -- View
+renderUpcoming model =
+  case model.upcomingEvents of
+    []     -> section [] []
+    events -> 
+      let mkWidget e = 
+          div [class "past-event"]
+            [ image "image" e.logo
+            , div [class "info"]
+                [ divT "title" e.title
+                , divT "date"  (e.date |> format "%b %e, %Y")
+                , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
+                ]
+            ]
+
+          eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
+          mkArticle content =
+            [ article [] content
+            , footer [] []
+            ]
+
+          content =
+            events 
+            |> List.take 4 
+            |> List.map mkWidget
+            |> ofEmpty
+            |> Maybe.map mkArticle
+            |> Maybe.withDefault [loading]
+      in 
+        section [class "past-events section"]
+          ([anchor "past-events", header [] [text "Upcoming Events"]] ++ content)
+
 renderPast model = 
   let
     mkWidget e = 
@@ -72,8 +107,6 @@ renderPast model =
           [ h1 [] [text ";("]
           , div [] [text "Could not load past events"]
           ]]
-
-    ofEmpty l = if List.isEmpty l then Nothing else Just l
 
     eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
     mkArticle content =
@@ -95,7 +128,6 @@ renderPast model =
   in
     section [class "past-events section"]
       ([anchor "past-events", header [] [text "Past Events"]] ++ content)
-
 
 renderNext model =
   let 

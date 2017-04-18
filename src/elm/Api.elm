@@ -83,18 +83,19 @@ eventsDecoder  =
     seasonDecoder (cfg, events) =
       let
         past = events |> List.filter (withStatus Events.Completed)
-        season =
+        live = events |> List.filter (withStatus Events.Live) 
+               |> List.reverse
+        (season, upcoming) =
           case cfg of
-            (True, _) -> Events.Summer
-            (_, True) -> Events.Winter
+            (True, _) -> (Events.Summer, [])
+            (_, True) -> (Events.Winter, [])
             _         -> 
-              events 
-              |> List.filter (withStatus Events.Live) 
-              |> List.head
-              |> Maybe.map Events.Ready 
-              |> Maybe.withDefault Events.InBetween
+              case live of
+                []     -> (Events.InBetween, [])
+                hd::tl -> (Events.Ready hd, tl) 
+              
       in
-        (season, past)
+        (season, upcoming, past)
 
     cfgDecoder =
       Json.map2
