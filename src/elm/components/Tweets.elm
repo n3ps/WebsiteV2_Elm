@@ -21,8 +21,16 @@ type alias Tweet =
   { text  : String
   , date  : Date
   , user  : TweeterUser
+  , entity : TweetEntity
   }
 
+type alias TweetEntity =
+  { urls: List TweetUrl
+  }
+
+type alias TweetUrl =
+  { url: String
+  }
 
 emptyModel = Just []
 
@@ -47,9 +55,27 @@ view resource =
                 [ span [class "handle"] [text t.user.handle]
                 , span [class "name"] [text t.user.name]
                 ]
-            , div [class "content"] [text t.text]
+            , div [class "content"] (processUrls t.text t.entity.urls [text ""])
             ]
         ]
+
+    processUrls txt urls nodes =
+      let
+        url =  (List.head urls |> Maybe.withDefault {url = ""}).url
+        fragments = if List.length urls >= 1 then String.split url txt else []
+
+        textNode = text (List.head fragments |> Maybe.withDefault txt) 
+        urlNode = aBlank [href url] [text url]
+        result = List.append nodes [textNode, urlNode]
+
+        remainingText = List.tail fragments |> Maybe.withDefault [] |> String.join ""
+        remainingUrls = List.tail urls |> Maybe.withDefault []
+      in
+        if List.length remainingUrls >= 1 then
+          processUrls remainingText remainingUrls result
+        else
+          result
+
     
     errorLoading =
       [ div [class "error"] 
@@ -62,7 +88,7 @@ view resource =
       case resource of
         Nothing                 -> errorLoading
         Just (Resource.Loading) -> [loading]
-        Just (Resource.Loaded tweets) -> tweets |> List.take 5 |> List.map mkTweet
+        Just (Resource.Loaded tweets) -> tweets |> List.take 5 |> List.map mkTweet   
   in
     div [class "list-n-twitter"]
       [ article [class "subscribe"]
