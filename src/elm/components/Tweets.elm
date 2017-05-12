@@ -88,7 +88,7 @@ view resource =
       case resource of
         Nothing                 -> errorLoading
         Just (Resource.Loading) -> [loading]
-        Just (Resource.Loaded tweets) -> tweets |> List.take 5 |> List.map mkTweet   
+        Just (Resource.Loaded tweets) -> tweets |> List.take 5 |> List.map mkTweet
   in
     div [class "list-n-twitter"]
       [ article [class "subscribe"]

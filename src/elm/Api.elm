@@ -183,5 +183,3 @@ tweetDecoder =
         (field "created_at" JsonX.date)
         (field "user" userDecoder)
         (field "entity" entityDecoder)
-
-        
