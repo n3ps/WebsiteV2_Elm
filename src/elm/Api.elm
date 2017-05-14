@@ -163,13 +163,23 @@ tweetDecoder =
         (field "name" Json.string)
         (field "url"  Json.string)
         (field "profile_image_url" Json.string)
+    
+    entityDecoder =
+      Json.map
+        Tweets.TweetEntity
+        (field "urls" (list urlDecoder))
+    
+    urlDecoder =
+      Json.map
+        Tweets.TweetUrl
+        (field "url" Json.string)    
 
   in
     Json.at ["tweets"]
     <| Json.list
-    <| Json.map3
+    <| Json.map4
         Tweets.Tweet
         (field "text" Json.string)
         (field "created_at" JsonX.date)
         (field "user" userDecoder)
-
+        (field "entity" entityDecoder)
