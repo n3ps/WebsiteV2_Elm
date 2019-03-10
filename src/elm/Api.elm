@@ -75,7 +75,7 @@ eventsDecoder  =
   let 
     toStatus s = 
       case s of
-        "live"      -> Events.Live
+        "upcoming"  -> Events.Live
         "completed" -> Events.Completed
         _           -> Events.Unknown
 
@@ -84,7 +84,6 @@ eventsDecoder  =
       let
         past = events |> List.filter (withStatus Events.Completed)
         live = events |> List.filter (withStatus Events.Live) 
-               |> List.reverse
         (season, upcoming) =
           case cfg of
             (True, _) -> (Events.Summer, [])
