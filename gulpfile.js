@@ -124,9 +124,9 @@ gulp.task("images:dev", function () {
 
 // Copy index.html and CNAME files to the "serve" directory
 gulp.task("copy:dev", function () {
-  return gulp.src(["src/index.html", "src/assets/images/favicon.ico"])
+  return gulp.src(["src/index.html", "src/CNAME", "src/assets/images/favicon.ico"])
     .pipe(gulp.dest("serve"))
-    .pipe($.size({ title: "index.html & favicon" }))
+    .pipe($.size({ title: "index.html & CNAME & favicon" }))
 });
 
 gulp.task("cname", function () {
@@ -240,7 +240,7 @@ gulp.task("build",
 // Builds your site with the "build" command and then runs all the optimizations on
 // it and outputs it to "./dist"
 gulp.task("publish", ["build", "clean:prod"], function () {
-  gulp.start("minify", "images", "fonts");
+  gulp.start("minify", "cname", "images", "fonts");
 });
 
 gulp.task('serveprod', function() {
