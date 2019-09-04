@@ -8,6 +8,10 @@ var browserSync = require('browser-sync');
 var del = require('del');
 var elm = require('gulp-elm');
 
+
+var reload = browserSync.reload;
+var bs;
+
 sass.compiler = require('node-sass');
 
 gulp.task("clean:dev", function(cb) {
@@ -52,9 +56,15 @@ gulp.task("elm", ["elm-init"], function () {
     .pipe(gulp.dest("serve"));
 });
 
-gulp.task("serve", ["copy:dev", "images:dev", "js:dev", "sass"], function () {
+gulp.task("watch", function () {
+  //gulp.watch(["src/**/*.elm", ["elm", "copy:dev", reload]);
+  //gulp.watch(["assets/scss/**/*.scss"], ["sass", "copy:dev", reload]);
+});
+
+gulp.task("serve:dev", ["copy:dev", "images:dev", "js:dev", "sass"], function () {
   browserSync.init({
     server: "./serve"
   });
-
 });
+
+gulp.task("default", ["serve:dev"]);
