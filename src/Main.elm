@@ -1,8 +1,8 @@
 module Main exposing (..)
  
+import Browser
 import Task exposing (Task)
 import Html as Html
-import Date
 import Http exposing (..)
 import Random
 import Json.Decode as Json exposing (..)
@@ -22,15 +22,19 @@ import Components.Events as Events
 import Components.Tweets as Tweets
 import Resource exposing (Resource)
 
+main : Program String Model Msg
 main = 
-  Html.programWithFlags
-    { init = init, view = view, update = update, subscriptions = (\_ -> Sub.none) }
+  Browser.element
+    { init = \flags -> (init flags)
+    , view = view
+    , update = update
+    , subscriptions = (\_ -> Sub.none) }
 
 --
 -- My functions
 --
-init : {version:String} -> (Model, Cmd Msg)
-init {version} =
+init : String -> (Model, Cmd Msg)
+init version =
   ({emptyModel | version = version}, Cmd.batch Api.resources)
 
 mapFst f (a, b) = (f a, b)
@@ -51,8 +55,8 @@ update msg model =
       TweetsMsg   msg1 -> Tweets.update   msg1 model.tweets |> mapFst updateTweets
       ApiFail Events e -> Events.update Events.Error model.events |> mapFst updateEvents
       ApiFail Tweets e -> Tweets.update Tweets.Error model.tweets |> mapFst updateTweets
-      ApiFail NotifyUser error -> model ! [notifyUser Error <| errorMsg error]
-      _ -> model ! []
+      ApiFail NotifyUser error -> (model, notifyUser Error <| errorMsg error)
+      _ -> (model, Cmd.none)
 
 
 errorMsg e =
@@ -61,5 +65,5 @@ errorMsg e =
     Http.NetworkError   -> "Sorry, network error"
     Http.BadUrl _       -> "Sorry, that's a bad URL"
     Http.BadStatus _    -> "This was not the status we were looking for"
-    Http.BadPayload _ _ -> "Sorry, we received a bad payload from the server"
+    Http.BadBody _      -> "Sorry, the data we sent to the server was malformed"
 

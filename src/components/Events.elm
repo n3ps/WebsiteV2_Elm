@@ -1,8 +1,8 @@
 module Components.Events exposing (..)
 
+import Time exposing (Posix, Zone, utc)
 import String exposing (split)
-import Date exposing (Date)
-import Date.Format exposing (format)
+import DateFormat exposing (format)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Components.HtmlHelpers exposing (..) -- (aBlank, anchor, divT, divL, simple, icon, simpleClass, image)
@@ -29,7 +29,7 @@ type Status
 
 type alias Event = 
   { title : String
-  , date : Date
+  , date : Time.Posix 
   , description : String
   , logo : String
   , venue : Venue
@@ -38,6 +38,16 @@ type alias Event =
   }
 
 withStatus st e = e.status == st
+
+standardEventDate date = 
+  format [ DateFormat.monthNameAbbreviated
+         , DateFormat.text " "
+         , DateFormat.dayOfMonthNumber
+         , DateFormat.text ", "
+         , DateFormat.yearNumber
+         ]
+         utc
+         date
 
 emptyModel =
   { next = Just Loading
@@ -54,38 +64,39 @@ type Msg
 
 update msg model =
   case msg of
-    Load (season, upcoming, past) -> { model | pastEvents = Just past, upcomingEvents = upcoming, next = Just (Resource.Loaded season) } ! []
+    Load (season, upcoming, past) -> ({ model | pastEvents = Just past, upcomingEvents = upcoming, next = Just (Resource.Loaded season) }, Cmd.none)
 
-    Error -> { model | pastEvents = Nothing, next = Nothing, upcomingEvents = [] } ! []
+    Error -> ({ model | pastEvents = Nothing, next = Nothing, upcomingEvents = [] }, Cmd.none)
 
 -- View
 renderUpcoming model =
   case model.upcomingEvents of
     []     -> section [] []
     events -> 
-      let mkWidget e = 
-          div [class "past-event"]
-            [ image "image" e.logo
-            , div [class "info"]
-                [ divT "title" e.title
-                , divT "date"  (e.date |> format "%b %e, %Y")
-                , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
-                ]
-            ]
+      let 
+          mkWidget e = 
+            div [class "past-event"]
+              [ image "image" e.logo
+              , div [class "info"]
+                  [ divT "title" e.title
+                  , divT "date"  (e.date |> standardEventDate)
+                  , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
+                  ]
+              ]
 
           eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
-          mkArticle content =
-            [ article [] content
-            , footer [] []
-            ]
+          mkArticle details =
+              [ article [] details
+              , footer [] []
+              ]
 
           content =
-            events 
-            |> List.take 4 
-            |> List.map mkWidget
-            |> ofEmpty
-            |> Maybe.map mkArticle
-            |> Maybe.withDefault [loading]
+              events 
+              |> List.take 4 
+              |> List.map mkWidget
+              |> ofEmpty
+              |> Maybe.map mkArticle
+              |> Maybe.withDefault [loading]
       in 
         section [class "past-events section"]
           ([anchor "past-events", header [] [text "Upcoming Events"]] ++ content)
@@ -97,7 +108,7 @@ renderPast model =
         [ image "image" e.logo
         , div [class "info"]
             [ divT "title" e.title
-            , divT "date"  (e.date |> format "%b %e, %Y")
+            , divT "date"  (e.date |> standardEventDate)
             , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
             ]
         ]
@@ -109,8 +120,8 @@ renderPast model =
           ]]
 
     eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
-    mkArticle content =
-      [ article [] content
+    mkArticle details =
+      [ article [] details
       , footer [] [aBlank [class "button -large", href eventBrite] [text "View All"]]
       ]
 
@@ -146,7 +157,17 @@ renderNext model =
             , div [class "details"]
                 [ div [class "date"]
                   [ icon "icon" "calendar"
-                  , text <| format "%A, %B %e, %Y at %l:%M %p" e.date
+                  , text  (format  [ DateFormat.dayOfWeekNameFull
+                                   , DateFormat.text ", "
+                                   , DateFormat.monthNameFull
+                                   , DateFormat.dayOfMonthNumber
+                                   , DateFormat.text " at "
+                                   , DateFormat.hourNumber
+                                   , DateFormat.text ":"
+                                   , DateFormat.minuteNumber
+                                   , DateFormat.text " "
+                                   , DateFormat.amPmUppercase
+                                   ] utc e.date)
                   ]
                 , div [class "venue"]
                   [ icon "icon" "map-marker"

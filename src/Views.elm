@@ -4,9 +4,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Html as App
-import Date
 import Array
-import Date.Format exposing (format)
+import DateFormat exposing (format)
 import Random
 import String
 import Json.Decode as Json

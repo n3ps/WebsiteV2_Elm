@@ -1,9 +1,12 @@
 module Api exposing (..)
 
-import Json.Decode as Json exposing (..)
-import Json.Decode.Extra as JsonX
+import Json.Decode as Decode exposing (Decoder, nullable, bool, int, list, string, succeed, field)
+import Json.Decode.Pipeline exposing (optional, required)
+import Time
 import Task exposing (Task)
-import Http exposing (..)
+import Http 
+import Url
+import Iso8601
 
 import Models exposing (..)
 import Messages exposing (..)
@@ -24,25 +27,34 @@ urlFor =
 
 resources = [getEvents, getBoard, getVideos, getTweets, getSponsors]
 
+
+
 handleSlackResponse fail success result =
   case result of
     (Ok data) -> SocialMsg (success data)
     (Err msg) -> ApiFail fail msg 
 
 postToSlack email fail success =
-  let body = stringBody "application/x-www-form-urlencoded" <| ("email=" ++ (encodeUri email))
+  let 
+      body = Http.stringBody "application/x-www-form-urlencoded" <| ("email=" ++ (Url.percentEncode email))
   in
-     Http.post (urlFor "slack") body slackDecoder
-     |> Http.send (handleSlackResponse fail success)
+     Http.post { url = urlFor "slack"
+               , body = body
+               , expect = Http.expectJson (handleSlackResponse fail success) slackDecoder
+               }
+     --|> Http.get (handleSlackResponse fail success)
 
 handleResourceResponse fail msg result =
   case result of
     (Ok data) -> msg data
     (Err m)   -> fail m
 
+
 getResource resource decoder fail msg =
-  Http.get (urlFor resource) decoder
-  |> Http.send (handleResourceResponse (ApiFail fail) msg)
+  Http.get { url = urlFor resource
+           , expect = Http.expectJson (handleResourceResponse (ApiFail fail) msg) decoder
+           }
+  --|> Http.get (handleResourceResponse (ApiFail fail) msg)
 --resource
 --  |> urlFor
 --  |> Http.get decoder
@@ -60,16 +72,18 @@ getTweets   = getResource "tweets"   tweetDecoder   Messages.Tweets (Resource.Lo
 ----------------
 
 slackDecoder =
-  Json.map2 
-    Social.SlackResponse
-    (field "ok"    Json.bool)
-    (Json.maybe <| field "error" Json.string)
+  Decode.succeed Social.SlackResponse
+    |> required "ok" bool
+    |> required "error" (nullable string) 
 
 venueDecoder = 
-  Json.map2
-    Venue
-    (field "name" Json.string)
-    (field "address" Json.string)
+  Decode.succeed  Venue
+    |> required "name" string
+    |> required "address" string
+
+
+decodeTime : Decode.Decoder Time.Posix
+decodeTime = Iso8601.decoder
 
 eventsDecoder  =
   let 
@@ -97,88 +111,89 @@ eventsDecoder  =
         (season, upcoming, past)
 
     cfgDecoder =
-      Json.map2
-        (,)
-        (field "isSummer" Json.bool)
-        (field "isWinter" Json.bool)
+      Decode.succeed (\summer winter -> (summer, winter))
+        |> required "isSummer" bool
+        |> required "isWinter" bool
 
-    eventsDecoder = 
-      Json.list 
-      <| Json.map7
-          Events.Event
-          (field "title"       Json.string)
-          (field "date"        JsonX.date)
-          (field "description" Json.string)
-          (field "logo"        Json.string)
-          (field "venue"       venueDecoder)
-          (field "link"        Json.string)
-          (field "status"      (Json.map toStatus Json.string))
+    eventDecoder = 
+        Decode.succeed Events.Event
+          |> required "title"  string
+          |> required "date"   decodeTime
+          |> required "description" string
+          |> required "logo"        string
+          |> required "venue"       venueDecoder
+          |> required "link"        string
+          |> required "status"      (Decode.map toStatus string)
   
+ 
+    eventListDecoder = 
+        Decode.list eventDecoder
+        
   in 
-    Json.map2
-      (,)
+    Decode.map2
+      (\config events -> (config, events))
       (field "config" cfgDecoder)
-      (field "events" eventsDecoder)
-    |> Json.map seasonDecoder
+      (field "events" eventListDecoder)
+    |> Decode.map seasonDecoder
 
 boardDecoder =
-  Json.at ["board"]
-  <| Json.list 
-  <| Json.map4
+  Decode.at ["board"]
+  <| Decode.list 
+  <| Decode.map4
       Board.BoardMember
-      (field "name"    Json.string)
-      (field "imgUrl"  Json.string)
-      (field "role"    Json.string)
-      (field "contact" Json.string)
+      (field "name"    string)
+      (field "imgUrl"  string)
+      (field "role"    string)
+      (field "contact" string)
 
 sponsorDecoder =
-  Json.at ["sponsors"]
-  <| Json.list 
-  <| Json.map3
+  Decode.at ["sponsors"]
+  <| Decode.list 
+  <| Decode.map3
       Sponsors.Sponsor
-      (field "name"   Json.string)
-      (field "url"    Json.string)
-      (field "imgUrl" Json.string)
+      (field "name"   Decode.string)
+      (field "url"    Decode.string)
+      (field "imgUrl" Decode.string)
 
 videoDecoder =
-  Json.at ["videos"]
-  <| Json.list
-  <| Json.map5
+  Decode.at ["videos"]
+  <| Decode.list
+  <| Decode.map5
       Videos.Video
-        (field "title"       Json.string)
-        (field "link"        Json.string)
-        (field "description" Json.string)
-        (field "date"        JsonX.date)
-        (field "thumbnail"   Json.string)
+        (field "title"       string)
+        (field "link"        string)
+        (field "description" string)
+        (field "date"        decodeTime)
+        (field "thumbnail"   string)
 
 
 tweetDecoder =
   let
     userDecoder =
-      Json.map5
+      Decode.map5
         Tweets.TweeterUser
-        (field "id"   Json.string)
-        (field "screen_name" Json.string)
-        (field "name" Json.string)
-        (field "url"  Json.string)
-        (field "profile_image_url" Json.string)
+        (field "id"   string)
+        (field "screen_name" string)
+        (field "name" string)
+        (field "url"  string)
+        (field "profile_image_url" string)
     
     entityDecoder =
-      Json.map
+      Decode.map
         Tweets.TweetEntity
         (field "urls" (list urlDecoder))
     
     urlDecoder =
-      Json.map
+      Decode.map
         Tweets.TweetUrl
-        (field "url" Json.string)    
+        (field "url" string)    
 
   in
-    Json.at ["tweets"]
-    <| Json.list
-    <| Json.map4
+    Decode.at ["tweets"]
+    <| Decode.list
+    <| Decode.map4
         Tweets.Tweet
-        (field "text" Json.string)
-        (field "created_at" JsonX.date)
+        (field "text" string)
+        (field "created_at" decodeTime)
         (field "user" userDecoder)
         (field "entity" entityDecoder)

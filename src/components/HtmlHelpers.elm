@@ -3,8 +3,7 @@ module Components.HtmlHelpers exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Date
-import Date.Format exposing (format)
+import DateFormat exposing (format)
 import Random
 import String
 
