@@ -3,6 +3,7 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var size = require('gulp-size');
+var plumber = require('gulp-plumber');
 var browserSync = require('browser-sync');
 var del = require('del');
 var elm = require('gulp-elm');
@@ -35,6 +36,20 @@ gulp.task("copy:dev", function () {
   return gulp.src(["index.html", "src/assets/images/favicon.ico"])
     .pipe(gulp.dest("serve"))
     .pipe(size({ title: "index.html & favicon" }));
+});
+
+gulp.task("elm-init", elm.init);
+gulp.task("elm", ["elm-init"], function () {
+  return gulp.src("src/Main.elm")
+    .pipe(plumber())
+    .pipe(elm())
+    .on("error", function(err) {
+      console.error(err.message);
+      browserSync.notify("Elm compile error", 5000);
+
+      fs.writeFileSync("serve/index.html", "<!DOCTYPE html><html><body><pre>" + err.message + "</pre></body></html>");
+    })
+    .pipe(gulp.dest("serve"));
 });
 
 gulp.task("serve", ["copy:dev", "images:dev", "js:dev", "sass"], function () {
