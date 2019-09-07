@@ -4,6 +4,9 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 var size = require('gulp-size');
 var plumber = require('gulp-plumber');
+var template = require('gulp-template');
+var gulpSequence = require('gulp-sequence');
+var git = require('gulp-git');
 var browserSync = require('browser-sync');
 var del = require('del');
 var elm = require('gulp-elm');
@@ -56,6 +59,19 @@ gulp.task("elm", ["elm-init"], function () {
     .pipe(gulp.dest("serve"));
 });
 
+gulp.task('version', function(){
+  git.revParse({args:'--short HEAD'}, function (err, hash) {
+    if (err) {
+      console.log('Can not get git hash');
+      hash = "no-hash-here";
+    }
+    gulp.src('assets/scripts/version.js')
+      .pipe(template({'version': '2.0.0-' + hash}))
+      .pipe(gulp.dest('serve/assets/scripts/'));
+    });
+});
+
+
 gulp.task("watch", function () {
   gulp.watch(["src/**/*.elm"], ["elm", "copy:dev", reload]);
   gulp.watch(["assets/scss/**/*.scss"], ["sass", "copy:dev", reload]);
@@ -63,7 +79,11 @@ gulp.task("watch", function () {
   gulp.watch(["index.html", "assets/scripts/*.js"], ["copy:dev", reload]);
 });
 
-gulp.task("serve:dev", ["copy:dev", "images:dev", "js:dev", "sass"], function () {
+gulp.task("build",
+  gulpSequence("clean:dev", ["sass", "copy:dev", "images:dev", "js:dev", "elm"], "version")
+);
+
+gulp.task("serve:dev", ["build"], function () {
   browserSync.init({
     server: "./serve"
   });
