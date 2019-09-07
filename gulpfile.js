@@ -59,6 +59,16 @@ gulp.task("elm", ["elm-init"], function () {
     .pipe(gulp.dest("serve"));
 });
 
+gulp.task("elm:prod", ["elm-init"], function () {
+  return gulp.src("src/Main.elm")
+    .pipe(plumber())
+    .pipe(elm({ optimize: true }))
+    .on("error", function(err) {
+      console.error(err.message);
+    })
+    .pipe(gulp.dest("dist"));
+});
+
 gulp.task('version', function(){
   git.revParse({args:'--short HEAD'}, function (err, hash) {
     if (err) {
