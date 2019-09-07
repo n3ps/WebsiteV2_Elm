@@ -5,7 +5,6 @@ var sass = require('gulp-sass');
 var size = require('gulp-size');
 var plumber = require('gulp-plumber');
 var template = require('gulp-template');
-var gulpSequence = require('gulp-sequence');
 var git = require('gulp-git');
 var uglify = require('gulp-uglify');
 var browserSync = require('browser-sync');
