@@ -1,6 +1,6 @@
 module Api exposing (..)
 
-import Json.Decode as Decode exposing (Decoder, nullable, bool, int, list, string, succeed, field)
+import Json.Decode as Decode exposing (Decoder, nullable, bool, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 import Time
 import Task exposing (Task)
@@ -130,70 +130,70 @@ eventsDecoder  =
         Decode.list eventDecoder
         
   in 
-    Decode.map2
+    Decode.succeed
       (\config events -> (config, events))
-      (field "config" cfgDecoder)
-      (field "events" eventListDecoder)
+      |> required "config" cfgDecoder
+      |> required "events" eventListDecoder
     |> Decode.map seasonDecoder
 
 boardDecoder =
   Decode.at ["board"]
   <| Decode.list 
-  <| Decode.map4
+  <| (Decode.succeed
       Board.BoardMember
-      (field "name"    string)
-      (field "imgUrl"  string)
-      (field "role"    string)
-      (field "contact" string)
+      |> required "name"    string
+      |> required "imgUrl"  string
+      |> required "role"    string
+      |> required "contact" string)
 
 sponsorDecoder =
   Decode.at ["sponsors"]
   <| Decode.list 
-  <| Decode.map3
+  <| (Decode.succeed
       Sponsors.Sponsor
-      (field "name"   Decode.string)
-      (field "url"    Decode.string)
-      (field "imgUrl" Decode.string)
+      |> required "name"   string
+      |> required "url"    string
+      |> required "imgUrl" string)
 
 videoDecoder =
   Decode.at ["videos"]
   <| Decode.list
-  <| Decode.map5
+  <| (Decode.succeed
       Videos.Video
-        (field "title"       string)
-        (field "link"        string)
-        (field "description" string)
-        (field "date"        decodeTime)
-        (field "thumbnail"   string)
+        |> required "title"       string
+        |> required "link"        string
+        |> required "description" string
+        |> required "date"        decodeTime
+        |> required "thumbnail"   string)
 
 
 tweetDecoder =
   let
     userDecoder =
-      Decode.map5
+      Decode.succeed
         Tweets.TweeterUser
-        (field "id"   string)
-        (field "screen_name" string)
-        (field "name" string)
-        (field "url"  string)
-        (field "profile_image_url" string)
+        |> required "id"   string
+        |> required "screen_name" string
+        |> required "name" string
+        |> required "url"  string
+        |> required "profile_image_url" string
     
     entityDecoder =
-      Decode.map
+      Decode.succeed
         Tweets.TweetEntity
-        (field "urls" (list urlDecoder))
+        |> required "urls" (list urlDecoder)
     
     urlDecoder =
-      Decode.map
+      Decode.succeed
         Tweets.TweetUrl
-        (field "url" string)    
+        |> required "url" string
 
   in
     Decode.at ["tweets"]
     <| Decode.list
-    <| Decode.map4
+    <| (Decode.succeed
         Tweets.Tweet
-        (field "text" string)
-        (field "created_at" decodeTime)
-        (field "user" userDecoder)
-        (field "entity" entityDecoder)
+        |> required "text" string
+        |> required "created_at" decodeTime
+        |> required "user" userDecoder
+        |> required "entity" entityDecoder)

@@ -7,7 +7,7 @@ var plumber = require('gulp-plumber');
 var browserSync = require('browser-sync');
 var del = require('del');
 var elm = require('gulp-elm');
-
+var fs = require('fs');
 
 var reload = browserSync.reload;
 var bs;
@@ -57,8 +57,10 @@ gulp.task("elm", ["elm-init"], function () {
 });
 
 gulp.task("watch", function () {
-  //gulp.watch(["src/**/*.elm", ["elm", "copy:dev", reload]);
-  //gulp.watch(["assets/scss/**/*.scss"], ["sass", "copy:dev", reload]);
+  gulp.watch(["src/**/*.elm"], ["elm", "copy:dev", reload]);
+  gulp.watch(["assets/scss/**/*.scss"], ["sass", "copy:dev", reload]);
+  gulp.watch(["assets/images/**"], ["copy:dev", reload]);
+  gulp.watch(["index.html", "assets/scripts/*.js"], ["copy:dev", reload]);
 });
 
 gulp.task("serve:dev", ["copy:dev", "images:dev", "js:dev", "sass"], function () {
@@ -67,4 +69,4 @@ gulp.task("serve:dev", ["copy:dev", "images:dev", "js:dev", "sass"], function ()
   });
 });
 
-gulp.task("default", ["serve:dev"]);
+gulp.task("default", ["serve:dev", "watch"]);
