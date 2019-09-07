@@ -5,8 +5,8 @@ var sass = require('gulp-sass');
 var size = require('gulp-size');
 var plumber = require('gulp-plumber');
 var template = require('gulp-template');
-var gulpSequence = require('gulp-sequence');
 var git = require('gulp-git');
+var uglify = require('gulp-uglify');
 var browserSync = require('browser-sync');
 var del = require('del');
 var elm = require('gulp-elm');
@@ -40,13 +40,16 @@ gulp.task("images:dev", function () {
 });
 
 gulp.task("copy:dev", function () {
-  return gulp.src(["index.html", "src/assets/images/favicon.ico"])
+  return gulp.src(["index.html", "assets/images/favicon.ico"])
     .pipe(gulp.dest("serve"))
     .pipe(size({ title: "index.html & favicon" }));
 });
 
-gulp.task("elm-init", elm.init);
-gulp.task("elm", ["elm-init"], function () {
+function elmInit() {
+  elm.init;
+}
+
+gulp.task("elm", gulp.series(elmInit, function () {
   return gulp.src("src/Main.elm")
     .pipe(plumber())
     .pipe(elm())
@@ -56,7 +59,20 @@ gulp.task("elm", ["elm-init"], function () {
 
       fs.writeFileSync("serve/index.html", "<!DOCTYPE html><html><body><pre>" + err.message + "</pre></body></html>");
     })
+    .pipe(plumber.stop())
     .pipe(gulp.dest("serve"));
+}));
+
+gulp.task("elm:prod", function (cb) {
+  return gulp.src("src/Main.elm")
+    .pipe(plumber())
+    .pipe(elm({ optimize: true }))
+    .on("error", function(err) {
+      console.error(err.message);
+      return err.message;
+    })
+    .pipe(uglify())
+    .pipe(gulp.dest("dist"));
 });
 
 gulp.task('version', function(){
@@ -80,13 +96,13 @@ gulp.task("watch", function () {
 });
 
 gulp.task("build",
-  gulpSequence("clean:dev", ["sass", "copy:dev", "images:dev", "js:dev", "elm"], "version")
+  gulp.series("clean:dev", "sass", "copy:dev", "images:dev", "js:dev", "elm", "version")
 );
 
-gulp.task("serve:dev", ["build"], function () {
+gulp.task("serve:dev", gulp.series("build", function () {
   browserSync.init({
     server: "./serve"
   });
-});
+}));
 
-gulp.task("default", ["serve:dev", "watch"]);
+gulp.task("default", gulp.series("serve:dev", "watch"));
