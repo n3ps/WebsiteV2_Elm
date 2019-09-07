@@ -160,6 +160,7 @@ renderNext model =
                   , text  (format  [ DateFormat.dayOfWeekNameFull
                                    , DateFormat.text ", "
                                    , DateFormat.monthNameFull
+                                   , DateFormat.text " "
                                    , DateFormat.dayOfMonthNumber
                                    , DateFormat.text " at "
                                    , DateFormat.hourNumber
