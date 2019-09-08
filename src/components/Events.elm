@@ -41,6 +41,11 @@ type alias Event =
 
 withStatus st e = e.status == st
 
+displayUtc zone =
+  case zone == Time.utc of
+    True -> "(UTC)"
+    _    -> ""
+
 standardEventDate timeZone date = 
   format [ DateFormat.monthNameAbbreviated
          , DateFormat.text " "
@@ -178,6 +183,7 @@ renderNext model =
                                    , DateFormat.text " "
                                    , DateFormat.amPmUppercase
                                    ] model.timeZone e.date)
+                  , text (" " ++ displayUtc model.timeZone)
                   ]
                 , div [class "venue"]
                   [ icon "icon" "map-marker"
