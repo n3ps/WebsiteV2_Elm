@@ -8,12 +8,11 @@ var template = require('gulp-template');
 var git = require('gulp-git');
 var uglify = require('gulp-uglify');
 var cleanCSS = require('gulp-clean-css');
-var browserSync = require('browser-sync');
+var browserSync = require('browser-sync').create();
 var del = require('del');
 var elm = require('gulp-elm');
 var fs = require('fs');
 
-var reload = browserSync.reload;
 var bs;
 
 sass.compiler = require('node-sass');
@@ -22,6 +21,11 @@ const prodDir = 'dist'
 
 let staticAssets = ["index.html", "assets/images/favicon.ico"];
 let stylesheets = ['assets/scss/*.scss', 'assets/scss/*.css'];
+
+function reload(done) {
+  browserSync.reload();
+  done();
+}
 
 gulp.task("clean:dev", function(cb) {
   return del(["serve"], cb);
@@ -123,14 +127,6 @@ gulp.task('version', function(){
 });
 
 
-gulp.task("watch", function (cb) {
-  gulp.watch(["src/**/*.elm"], gulp.series(elmDev, "copy:dev", reload));
-  gulp.watch(["assets/scss/**/*.scss"], gulp.series(stylesDev, "copy:dev", reload));
-  gulp.watch(["assets/images/**"], gulp.series("copy:dev", reload));
-  gulp.watch(["index.html", "assets/scripts/*.js"], gulp.series("copy:dev", reload));
-  cb();
-});
-
 gulp.task("build",
   gulp.series("clean:dev", stylesDev, "copy:dev", "images:dev", "js:dev", elmDev, "version")
 );
@@ -139,9 +135,14 @@ gulp.task("serve:dev", gulp.series("build", function () {
   browserSync.init({
     server: "./serve"
   });
+  // Couldn't get external watch task to reload the browser more than once.
+  gulp.watch(["src/**/*.elm"], gulp.series(elmDev, "copy:dev", reload));
+  gulp.watch(["assets/scss/**/*.scss"], gulp.series(stylesDev, "copy:dev", reload));
+  gulp.watch(["assets/images/**"], gulp.series("copy:dev", reload));
+  gulp.watch(["index.html", "assets/scripts/*.js"], gulp.series("copy:dev", reload));
 }));
 
-gulp.task("default", gulp.parallel("serve:dev", "watch"));
+gulp.task("default", gulp.series("serve:dev"));
 
 exports.elmProd = elmProd;
 exports.stylesDev = stylesDev;
