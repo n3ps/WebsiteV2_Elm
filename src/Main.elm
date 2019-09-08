@@ -35,7 +35,7 @@ main =
 --
 init : String -> (Model, Cmd Msg)
 init version =
-  ({emptyModel | version = version}, Cmd.batch Api.resources)
+  ({emptyModel | version = version}, Cmd.batch  ((Cmd.map EventsMsg Events.initCmd) :: Api.resources))
 
 mapFst f (a, b) = (f a, b)
 
