@@ -39,6 +39,7 @@ type alias Event =
   , status: Status
   }
 
+eventsUrl = "https://www.meetup.com/fullstackmb/events/"
 withStatus st e = e.status == st
 
 displayUtc zone =
@@ -98,7 +99,6 @@ renderUpcoming model =
                   ]
               ]
 
-          eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
           mkArticle details =
               [ article [] details
               , footer [] []
@@ -133,10 +133,9 @@ renderPast model =
           , div [] [text "Could not load past events"]
           ]]
 
-    eventBrite = "http://www.eventbrite.ca/o/winnipeg-dot-net-user-group-1699161450"
     mkArticle details =
       [ article [] details
-      , footer [] [aBlank [class "button -large", href eventBrite] [text "View All"]]
+      , footer [] [aBlank [class "button -large", href eventsUrl] [text "View All"]]
       ]
 
     content =
