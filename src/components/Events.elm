@@ -1,6 +1,7 @@
 module Components.Events exposing (..)
 
-import Time exposing (Posix, Zone, utc)
+import Task exposing (Task)
+import Time exposing (Posix)
 import String exposing (split)
 import DateFormat exposing (format)
 import Html exposing (..)
@@ -15,6 +16,7 @@ type alias Model =
   { next : Maybe (Resource Season)
   , upcomingEvents : List Event
   , pastEvents : Maybe (List Event)
+  , timeZone : Time.Zone
   }
 
 type alias Venue = 
@@ -39,21 +41,24 @@ type alias Event =
 
 withStatus st e = e.status == st
 
-standardEventDate date = 
+standardEventDate timeZone date = 
   format [ DateFormat.monthNameAbbreviated
          , DateFormat.text " "
          , DateFormat.dayOfMonthNumber
          , DateFormat.text ", "
          , DateFormat.yearNumber
          ]
-         utc
+         timeZone
          date
 
 emptyModel =
   { next = Just Loading
   , upcomingEvents = []
   , pastEvents = Just [] 
+  , timeZone = Time.utc 
   }
+
+initCmd = Task.perform GotTimeZone Time.here
 
 ofEmpty l = if List.isEmpty l then Nothing else Just l
 
@@ -61,12 +66,16 @@ ofEmpty l = if List.isEmpty l then Nothing else Just l
 type Msg
   = Load (Season, List Event, List Event)
   | Error
+  | GotTimeZone Time.Zone
 
 update msg model =
   case msg of
     Load (season, upcoming, past) -> ({ model | pastEvents = Just past, upcomingEvents = upcoming, next = Just (Resource.Loaded season) }, Cmd.none)
 
     Error -> ({ model | pastEvents = Nothing, next = Nothing, upcomingEvents = [] }, Cmd.none)
+
+    GotTimeZone zone ->
+      ({ model | timeZone = zone }, Cmd.none)
 
 -- View
 renderUpcoming model =
@@ -79,7 +88,7 @@ renderUpcoming model =
               [ image "image" e.logo
               , div [class "info"]
                   [ divT "title" e.title
-                  , divT "date"  (e.date |> standardEventDate)
+                  , divT "date"  (e.date |> standardEventDate model.timeZone)
                   , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
                   ]
               ]
@@ -108,7 +117,7 @@ renderPast model =
         [ image "image" e.logo
         , div [class "info"]
             [ divT "title" e.title
-            , divT "date"  (e.date |> standardEventDate)
+            , divT "date"  (e.date |> standardEventDate model.timeZone)
             , divL "view" [aBlank [class "button -outline", href e.link] [text "View"]]
             ]
         ]
@@ -160,14 +169,15 @@ renderNext model =
                   , text  (format  [ DateFormat.dayOfWeekNameFull
                                    , DateFormat.text ", "
                                    , DateFormat.monthNameFull
+                                   , DateFormat.text " "
                                    , DateFormat.dayOfMonthNumber
                                    , DateFormat.text " at "
                                    , DateFormat.hourNumber
                                    , DateFormat.text ":"
-                                   , DateFormat.minuteNumber
+                                   , DateFormat.minuteFixed
                                    , DateFormat.text " "
                                    , DateFormat.amPmUppercase
-                                   ] utc e.date)
+                                   ] model.timeZone e.date)
                   ]
                 , div [class "venue"]
                   [ icon "icon" "map-marker"
