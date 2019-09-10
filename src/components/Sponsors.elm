@@ -20,7 +20,7 @@ type Msg
   = Load Model
 
 update (Load list) model =
-  { model | sponsors = list } ! []
+  ({ model | sponsors = list }, Cmd.none)
 
 -- View
 view sponsors =

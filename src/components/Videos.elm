@@ -1,6 +1,6 @@
 module Components.Videos exposing (..)
 
-import Date exposing (Date)
+import Time exposing (utc)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Components.HtmlHelpers exposing (aBlank, anchor, iconFor)
@@ -12,7 +12,7 @@ type alias Video =
   { title:String
   , link: String
   , description: String
-  , date: Date
+  , date: Time.Posix 
   , thumbnail: String
   }
 
@@ -26,7 +26,7 @@ type Msg
 
 update msg model =
   case msg of
-    Load loaded  -> { model | videos = loaded } ! []
+    Load loaded  -> ({ model | videos = loaded }, Cmd.none) 
 
 -- View
 view videos =

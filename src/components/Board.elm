@@ -21,7 +21,7 @@ type Msg
   = Load Model
 
 update (Load members) model = 
-  { model | board = members } ! []
+  ({ model | board = members }, Cmd.none)
 
 -- View
 view members =

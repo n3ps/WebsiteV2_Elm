@@ -1,6 +1,6 @@
 module Components.Tweets exposing (..)
 
-import Date exposing (Date)
+import Time exposing (utc)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Components.HtmlHelpers exposing (aBlank, anchor, divT, divL, spanSimple, loading)
@@ -19,7 +19,7 @@ type alias TweeterUser =
 
 type alias Tweet =
   { text  : String
-  , date  : Date
+  , date  : Time.Posix 
   , user  : TweeterUser
   , entity : TweetEntity
   }
@@ -41,8 +41,8 @@ type Msg
 
 update msg model = 
   case msg of
-    Load tw -> tw ! []
-    Error   -> Nothing ! []
+    Load tw -> (tw, Cmd.none)
+    Error   -> (Nothing, Cmd.none)
 
 -- View
 view resource =

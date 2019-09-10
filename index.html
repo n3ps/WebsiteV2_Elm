@@ -14,8 +14,12 @@
     <link rel="stylesheet" href="/assets/stylesheets/pnotify.custom.min.css" type="text/css">
   </head>
   <body>
+    <div id="app"></div>
     <script>
-      var app = Elm.Main.fullscreen({version: window.version});
+      var app = Elm.Main.init({
+        flags: window.version,
+        node: document.getElementById("app")
+      });
       app.ports.notify.subscribe(function(values){
        new PNotify({ type: values[0] || "info", text: values[1] || "Message" });
       });

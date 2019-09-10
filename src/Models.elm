@@ -1,6 +1,5 @@
 module Models exposing (..)
 
-import Date exposing (Date)
 import Random 
 import Dict
 
