@@ -7,6 +7,7 @@ import Components.HtmlHelpers exposing (..)
 import Json.Decode as Json
 
 import Header.Messages exposing (..)
+import Components.Events as Events 
 import Components.Videos as Videos
 
 view model =
@@ -96,7 +97,7 @@ socialIcons =
     ]
 
 menuOptions =
-  [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
+  [ aBlank [title "Open Event Brite page", href Events.eventsUrl ] [text "Events"]
   , a [title "Watch past presentations", href "#watch-us"] [text "Videos"]
   , a [title "Contact us", href "#contact-us"] [text "Contact"]
   ]
