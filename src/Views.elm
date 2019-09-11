@@ -47,7 +47,7 @@ img_asset s = "/assets/images/" ++ s
 
 
 menuOptions =
-  [ aBlank [title "Open Event Brite page", href "http://www.eventbrite.com/org/1699161450"] [text "Events"]
+  [ aBlank [title "Open events page", href Events.eventsUrl ] [text "Events"]
   , a [title "Watch past presentations", href "#watch-us"] [text "Videos"]
   , a [title "Contact us", href "#contact-us"] [text "Contact"]
   ]
