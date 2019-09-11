@@ -23,7 +23,8 @@ import Resource exposing (Resource)
 -----------------
 urlFor =
   -- (++) "http://localhost:8083/api/"
-  (++) "http://api.winnipegdotnet.org/api/"
+  (++) "https://winnipegdotnetugapi.azurewebsites.net/api/"
+  --(++) "http://api.winnipegdotnet.org/api/"
 
 resources = [getEvents, getBoard, getVideos, getTweets, getSponsors]
 
