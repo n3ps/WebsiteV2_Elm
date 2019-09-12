@@ -114,21 +114,28 @@ function elmProd () {
     .pipe(gulp.dest(prodDir));
 }
 
-gulp.task('version', function(){
+function version() {
+  return versionShare('serve/assets/scripts');
+}
+
+function versionProd() {
+  return versionShare('dist/assets/scripts');
+}
+
+function versionShare(output) {
   return git.revParse({args:'--short HEAD'}, function (err, hash) {
     if (err) {
       console.log('Can not get git hash');
       hash = "no-hash-here";
     }
     gulp.src('assets/scripts/version.js')
-      .pipe(template({'version': '2.0.0-' + hash}))
-      .pipe(gulp.dest('serve/assets/scripts/'));
+      .pipe(template({'version': '2.1.0-' + hash}))
+      .pipe(gulp.dest(output));
     });
-});
-
+}
 
 gulp.task("build",
-  gulp.series("clean:dev", stylesDev, "copy:dev", "images:dev", "js:dev", elmDev, "version")
+  gulp.series("clean:dev", stylesDev, "copy:dev", "images:dev", "js:dev", elmDev, version)
 );
 
 gulp.task("serve:dev", gulp.series("build", function () {
@@ -150,4 +157,4 @@ exports.stylesProd = stylesProd;
 exports.jsProd = jsProd;
 exports.copyProd = copyProd;
 
-exports.buildProd = gulp.series(cleanProd, gulp.parallel(stylesProd, imagesProd, jsProd, copyProd, elmProd), "version");
+exports.buildProd = gulp.series(cleanProd, gulp.parallel(stylesProd, imagesProd, jsProd, copyProd, elmProd), versionProd);
