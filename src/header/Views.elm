@@ -5,6 +5,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Components.HtmlHelpers exposing (..)
 import Json.Decode as Json
+import Branding
 
 import Header.Messages exposing (..)
 import Components.Events as Events 
@@ -106,8 +107,8 @@ logoMenu =
   div [class "logo-menu"]
     [ img [src "/assets/images/logo.png"] []
     , section [class "motto"]
-        [ header [] [text "Winnipeg Dot Net User Group"]
-        , divT "description" "A user group full of lambdas, folds, MVC, ponnies and rainbows!"
+        [ header [] [text Branding.title]
+        , divT "description" Branding.tagLine
         ]
     , div [class "main-menu"] menuOptions
     , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]

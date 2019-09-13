@@ -10,6 +10,7 @@ import Random
 import String
 import Json.Decode as Json
 
+import Branding 
 import Messages exposing (..)
 import Models exposing (..)
 
@@ -36,7 +37,7 @@ view model =
     , Board.view model.board
     , footer [class "main-footer"] 
         [ divL "menu" menuOptions
-        , divT "copyright" "© Winnipeg Dot Net User Group 2015"
+        , divT "copyright" ("© " ++ Branding.title ++ " 2019")
         , divT "version" model.version
         ]
     , div [class "backdrop"] []
