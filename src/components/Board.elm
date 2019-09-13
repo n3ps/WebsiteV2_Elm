@@ -2,6 +2,7 @@ module Components.Board exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Branding
 import Components.HtmlHelpers exposing (aBlank, anchor, divT, divL)
 
 -- Model
@@ -41,7 +42,7 @@ view members =
       [ anchor "contact-us"
       , header  [] [text "Contact Us"]
       , article [] 
-          [ divT "message" "Looking to reach out directly to the Winnipeg .NET User Group board? Click on the board member to ask your query."
+          [ divT "message" ("Looking to reach out directly to the " ++ Branding.title ++ " board? Click on the board member to ask your query.")
           , divL "members" contactMap
           ]
       ]

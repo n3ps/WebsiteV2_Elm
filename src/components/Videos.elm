@@ -1,6 +1,7 @@
 module Components.Videos exposing (..)
 
-import Time exposing (utc)
+import Time
+import Branding
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Components.HtmlHelpers exposing (aBlank, anchor, iconFor)
@@ -41,7 +42,7 @@ view videos =
   in section [class "featured-videos section"]
     [ anchor "watch-us"
     , header [] 
-        [span [class "title"] [text "Winnipeg .NET User Group"],
+        [span [class "title"] [text Branding.title],
          aBlank [href youTube]
           [iconFor "youtube-play", span [] [text "Subscribe"]]]
     , article [] (featured |> List.map mkFeature)

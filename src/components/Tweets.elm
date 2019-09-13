@@ -1,6 +1,7 @@
 module Components.Tweets exposing (..)
 
-import Time exposing (utc)
+import Time
+import Branding
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Components.HtmlHelpers exposing (aBlank, anchor, divT, divL, spanSimple, loading)
@@ -94,7 +95,7 @@ view resource =
       [ article [class "subscribe"]
           [ anchor "subscribe"
           , header [] [text "Want to make sure you don't miss a meeting?"]
-          , divT "signup"   "Then take a minute and sign up for the Winnipeg .NET user group mailing list!"
+          , divT "signup"   ("Then take a minute and sign up for the "++ Branding.title ++" mailing list!")
           , divT "schedule" "You can be on top of our event schedule, and all you need to do is check you email. Sign up now and don't miss another meeting." 
           , footer [] [aBlank [class "button -outline -large", href "http://eepurl.com/clTOr"] [text "Add me to the list"]]
           ]

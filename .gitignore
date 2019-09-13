@@ -5,3 +5,4 @@ serve
 dist
 tmp
 .vscode
+*.swp
