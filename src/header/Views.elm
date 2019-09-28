@@ -39,7 +39,7 @@ navMenu =
   in ul [class "nav-menu"] (items |> List.map toLi)
 
 navClose =
-  a [class "button-close", href "javascript:void(0)", onClick ToggleMenu] [iconFor "close"]
+  a [class "button-close",  onClick ToggleMenu] [iconFor "close"]
 
 onEnter : msg -> msg -> Attribute msg
 onEnter fail success =
@@ -111,6 +111,6 @@ logoMenu =
         , divT "description" Branding.tagLine
         ]
     , div [class "main-menu"] menuOptions
-    , a [class "button-open", href "javascript:void(0)", onClick ToggleMenu] [iconFor "bars"]
+    , a [class "button-open", onClick ToggleMenu] [iconFor "bars"]
     ]
 
